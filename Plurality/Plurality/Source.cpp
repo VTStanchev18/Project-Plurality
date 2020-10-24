@@ -25,7 +25,7 @@ void mainMenu(SET sets[], int setCount)
 	{
 		system("CLS");
 		cout << "---- M E N U ----\n";
-		cout << "1. Create\n2. Print";
+		cout << "1. Create a set\n2. Print all sets\n3. Edit a set\n4. Delete a set\n5. Merge two sets\n6. Section of two sets\n7. Difference of two sets\n";
 		//Prints options:
 		//	Esc. Go back -> quit
 		//	1. Create a new set
@@ -33,9 +33,10 @@ void mainMenu(SET sets[], int setCount)
 		//	3. Edit a set -> change values or sort the set
 		//	4. Delete a set
 		//	5. Merge two sets
-		//	6. Section two sets
-		//	7. OPTIONAL: Save function
-		//	8. OPTIONAL: Load function
+		//	6. Section of two sets
+		//	7. Difference of two sets
+		//	8. OPTIONAL: Save function
+		//	9. OPTIONAL: Load function
 
 		switch (_getch())
 		{
@@ -57,6 +58,10 @@ void mainMenu(SET sets[], int setCount)
 			if (setCount > 0)
 			{
 				printSets(sets, setCount);
+			}
+			else
+			{
+				cout << "\nError... \nNo available sets...";
 			}
 			break;
 		case '3': //3. Edit a set -> change values or sort the set
