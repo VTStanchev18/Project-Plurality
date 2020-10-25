@@ -2,6 +2,7 @@
 #include <iostream>
 #include "conio.h"
 #include <vector>
+#include "time.h" 
 
 #include "Sets.h"
 
@@ -12,8 +13,11 @@ void mainMenu(SET sets[], int setCount);
 //Main ------------------------<|
 int main()
 {
+	srand(time(NULL));
+
 	SET sets[30];
 	int setCount = 0;
+	
 	mainMenu(sets, setCount);
 }
 
@@ -21,11 +25,13 @@ int main()
 void mainMenu(SET sets[], int setCount)
 {
 	bool inApp = true;
+	int amount = 0;
 	while (inApp)
 	{
 		system("CLS");
 		cout << "---- M E N U ----\n";
 		cout << "1. Create a set\n2. Print all sets\n3. Edit a set\n4. Delete a set\n5. Merge two sets\n6. Section of two sets\n7. Difference of two sets\n";
+		cout << "0. Add dummy sets\n"; //Dev only
 		//Prints options:
 		//	Esc. Go back -> quit
 		//	1. Create a new set
@@ -37,6 +43,7 @@ void mainMenu(SET sets[], int setCount)
 		//	7. Difference of two sets
 		//	8. OPTIONAL: Save function
 		//	9. OPTIONAL: Load function
+		//	0. Adds dummy sets
 
 		switch (_getch())
 		{
@@ -68,7 +75,7 @@ void mainMenu(SET sets[], int setCount)
 
 			break;
 		case '4': //4. Delete a set
-
+			removeSet(sets, setCount);
 			break;
 		case '5': //5. Merge two sets
 
@@ -76,7 +83,17 @@ void mainMenu(SET sets[], int setCount)
 		case '6': //6. Section two sets
 
 			break;
-		default:
+		case '0': //LOADS DUMMY SETS
+			amount = rand() % 8 + 4 + setCount;
+			for (int i = setCount; i < amount; i++)
+			{
+				dummySet(sets[setCount].values);
+				setCount++;
+			}
+			cout << "\nDUMMY SETS ADDED...\n";
+			_getch();
+			break;
+		default: //TODO!!! Add an error case = default case
 
 			break;
 		}
