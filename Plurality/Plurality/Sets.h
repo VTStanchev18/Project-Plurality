@@ -100,11 +100,11 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
 int getRemoveIndex(SET sets[], int setCount)
 {
 	system("CLS");
-	printSets(sets, setCount, false);
+	printSets(sets, setCount, -1, false);
 
 	int index;
 	cout << "Choose the set to delete (number!): "; //TODO!!! MAKE IT POSSIBLE TO DELETE A SET BY CHOOSING A NAME
-	cin >> index;
+	putinInt(index);
 	if (index >= setCount or index < 0)
 	{
 		cout << "Error...\n";
@@ -118,8 +118,9 @@ void removeSet(SET sets[], int& setCount) //TODO!!! ADD THE SET NAME INTO THE SE
 {
 	int index = getRemoveIndex(sets, setCount);
 	
-	cout << "This set WILL be DELETED FOREVER!\n";
-	printSets(sets, setCount, index);
+	printSets(sets, setCount, index, false);
+	cout << "\n\nThis set WILL be DELETED FOREVER!\n";
+	_getch();
 
 	for (int i = index; i < setCount - 1; i++)
 	{

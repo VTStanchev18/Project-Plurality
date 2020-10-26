@@ -30,6 +30,7 @@ void mainMenu(SET sets[], int setCount)
 	{
 		system("CLS");
 		cout << "---- M E N U ----\n";
+		cout << setCount << "\\" << 26 << "\n";
 		cout << "1. Create a set\n2. Print all sets\n3. Edit a set\n4. Delete a set\n5. Merge two sets\n6. Section of two sets\n7. Difference of two sets\n";
 		cout << "0. Add dummy sets\n"; //Dev only
 		//Prints options:
@@ -69,6 +70,7 @@ void mainMenu(SET sets[], int setCount)
 			else
 			{
 				cout << "\nError... \nNo available sets...";
+				_getch();
 			}
 			break;
 		case '3': //3. Edit a set -> change values or sort the set
@@ -85,13 +87,20 @@ void mainMenu(SET sets[], int setCount)
 			break;
 		case '0': //LOADS DUMMY SETS
 			amount = rand() % 8 + 4 + setCount;
-			for (int i = setCount; i < amount; i++)
+			if (setCount + amount <= 26)
 			{
-				dummySet(sets[setCount].values);
-				setCount++;
+				for (int i = setCount; i < amount; i++)
+				{
+					dummySet(sets[setCount].values);
+					setCount++;
+				}
+				cout << "\n" << amount << " DUMMY SETS ADDED...\n";
+				_getch();
 			}
-			cout << "\nDUMMY SETS ADDED...\n";
-			_getch();
+			else
+			{
+				cout << "No more available space for new sets\n";
+			}
 			break;
 		default: //TODO!!! Add an error case = default case
 
