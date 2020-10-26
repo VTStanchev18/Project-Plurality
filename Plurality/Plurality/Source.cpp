@@ -24,15 +24,18 @@ int main()
 //Main Functions --------------<|
 void mainMenu(SET sets[], int setCount)
 {
-	bool inApp = true;
+	bool inApp = true, devMode = false;
 	int amount = 0, mem = 0;
+	string lastInput = "";
+	string code = "wwssadadba";
 	while (inApp)
 	{
 		system("CLS");
 		cout << "---- M E N U ----\n";
 		cout << setCount << "\\" << 26 << "\n";
 		cout << "1. Create a set\n2. Print all sets\n3. Edit a set\n4. Delete a set\n5. Merge two sets\n6. Section of two sets\n7. Difference of two sets\n";
-		cout << "0. Add dummy sets\n"; //Dev only
+		if(devMode)
+			cout << "0. Add dummy sets\n"; //Dev only
 		//Prints options:
 		//	Esc. Go back -> quit
 		//	1. Create a new set
@@ -46,7 +49,8 @@ void mainMenu(SET sets[], int setCount)
 		//	9. OPTIONAL: Load function
 		//	0. Adds dummy sets
 
-		switch (_getch())
+		char sym = _getch();
+		switch (sym)
 		{
 		case 27: //Escape
 			inApp = false;
@@ -90,30 +94,51 @@ void mainMenu(SET sets[], int setCount)
 
 			break;
 		case '0': //LOADS DUMMY SETS
-			amount = rand() % 8 + 4 + setCount;
-			mem = setCount;
-			if (amount <= 26)
+			if (devMode)
 			{
-				for (int i = setCount; i < amount; i++)
+				amount = rand() % 8 + 4 + setCount;
+				mem = setCount;
+				if (amount <= 26)
 				{
-					dummySet(sets[setCount].values);
-					sets[setCount].origin = "DUMMY SET";
-					setCount++;
+					for (int i = setCount; i < amount; i++)
+					{
+						dummySet(sets[setCount].values);
+						sets[setCount].origin = "DUMMY SET";
+						setCount++;
+					}
+					cout << "\n" << amount - mem << " DUMMY SETS ADDED...\n";
+					_getch();
 				}
-				cout << "\n" << amount - mem<< " DUMMY SETS ADDED...\n";
-				_getch();
+				else
+				{
+					cout << "No more available space for new sets\n";
+				}
 			}
-			else
-			{
-				cout << "No more available space for new sets\n";
-			}
+			lastInput = "";
+			break;
+		case 'w':
+		case 's':
+		case 'a':
+		case 'd':
+		case 'b':
+			lastInput += sym;
 			break;
 		default: //TODO!!! Add an error case = default case
-
+			lastInput = "";
 			break;
 		}
 
-
+		if(lastInput==code)
+		{
+			devMode = !devMode;
+			cout << "\n\nDEV MODE ";
+			if (devMode)
+				cout << "ACTIVATED!";
+			else
+				cout << "DEACTIVATED!";
+			lastInput = "";
+			_getch();
+		}
 	
 	}
 }
