@@ -9,6 +9,8 @@ using namespace std;
 
 struct SET
 {
+	string origin;
+	char name;
 	vector<int> values;
 };
 
@@ -75,6 +77,7 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
 {
 	system("CLS");
 	
+	int longestVector = 0;
 	int j = 0;
 	int max = setCount;
 	if (index != -1)
@@ -83,14 +86,38 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
 		max = index + 1;
 	}
 
+	for (int i = 0; i < max; i++) //I think this works?
+	{
+		if (sets[i].values.size() > longestVector)
+		{
+			longestVector = sets[i].values.size();
+		}
+	}
+
 	for (j; j < max; j++)
 	{
-		cout << j << " - " << char(j + 65) << "(" << sets[j].values.size() << ")"  << " -> ";
+		string test = "";
+		cout << j;
+		if (j < 10)
+		{
+			cout << ' ';
+		}
+		cout << " -  " << char(j + 65) << "(" << sets[j].values.size() << ")";
+		if (sets[j].values.size() < 10)
+		{
+			cout << ' ';
+		}
+		cout << " ->  ";
 		for (int i = 0; i < sets[j].values.size(); i++)
 		{
 			cout << sets[j].values[i] << " ";
+			test += to_string(sets[j].values[i]) + ' ';
 		}
-		cout << "\n";
+		for (int i = 40 + longestVector - test.length(); i > 0; i--) //TODO!!! Make lenght based on the longest vector -> longest vector + 10 spaces
+		{
+			cout << ' ';
+		}
+		cout << "-=> " << sets[j].origin << "\n";
 	}
 
 	if(wait)

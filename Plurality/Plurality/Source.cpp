@@ -25,7 +25,7 @@ int main()
 void mainMenu(SET sets[], int setCount)
 {
 	bool inApp = true;
-	int amount = 0;
+	int amount = 0, mem = 0;
 	while (inApp)
 	{
 		system("CLS");
@@ -55,6 +55,7 @@ void mainMenu(SET sets[], int setCount)
 			if (setCount <= 26)
 			{
 				createSet(sets[setCount].values);
+				sets[setCount].origin = "User Made Set";
 				setCount++;
 			}
 			else
@@ -85,16 +86,21 @@ void mainMenu(SET sets[], int setCount)
 		case '6': //6. Section two sets
 
 			break;
+		case '7': //7. Difference of two sets
+
+			break;
 		case '0': //LOADS DUMMY SETS
 			amount = rand() % 8 + 4 + setCount;
-			if (setCount + amount <= 26)
+			mem = setCount;
+			if (amount <= 26)
 			{
 				for (int i = setCount; i < amount; i++)
 				{
 					dummySet(sets[setCount].values);
+					sets[setCount].origin = "DUMMY SET";
 					setCount++;
 				}
-				cout << "\n" << amount << " DUMMY SETS ADDED...\n";
+				cout << "\n" << amount - mem<< " DUMMY SETS ADDED...\n";
 				_getch();
 			}
 			else
