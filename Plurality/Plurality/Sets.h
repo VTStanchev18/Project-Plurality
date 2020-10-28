@@ -49,7 +49,8 @@ void sortSet(vector<int>& set)
 	}
 }
 
-void createSet(vector<int> &set)
+//Recreate this... -> use a set as an arguement
+void createSet(SET &set)
 {
 	system("CLS");
 
@@ -67,10 +68,12 @@ void createSet(vector<int> &set)
 	{
 		int a = 0;
 		putinInt(a);
-		set.push_back(a);
+		set.values.push_back(a);
 	}
 
-	sortSet(set);
+	set.origin = "User Made Set";
+
+	sortSet(set.values);
 }
 
 void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
@@ -102,7 +105,7 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
 		{
 			cout << ' ';
 		}
-		cout << " -  " << char(j + 65) << "(" << sets[j].values.size() << ")";
+		cout << " -  " << sets[j].name << "(" << sets[j].values.size() << ")";
 		if (sets[j].values.size() < 10)
 		{
 			cout << ' ';
@@ -167,4 +170,31 @@ void dummySet(vector<int>& set)
 	}
 
 	sortSet(set);
+}
+
+SET unionSets(SET A, SET B)
+{	
+	SET C;
+
+	string origin = "Union of ";
+	origin += A.name; +" and " + B.name;
+	origin += " and "; +B.name;
+	origin += B.name;	
+	C.origin = origin;
+	
+	int j = 0;
+	C.values.resize(A.values.size() + B.values.size());
+	for (int i = 0; i < A.values.size(); i++)
+	{
+		C.values[j] = A.values[i];
+		j++;
+	}
+
+	for (int i = 0; i < B.values.size(); i++)
+	{
+		C.values[j] = B.values[i];
+		j++;
+	}
+
+	return C;
 }

@@ -26,6 +26,7 @@ void mainMenu(SET sets[], int setCount)
 {
 	bool inApp = true, devMode = false;
 	int amount = 0, mem = 0;
+	int firstId = 0, secondId = 1;
 	string lastInput = "";
 	string code = "wwssadadba";
 	while (inApp)
@@ -33,7 +34,7 @@ void mainMenu(SET sets[], int setCount)
 		system("CLS");
 		cout << "---- M E N U ----\n";
 		cout << setCount << "\\" << 26 << "\n";
-		cout << "1. Create a set\n2. Print all sets\n3. Edit a set\n4. Delete a set\n5. Merge two sets\n6. Section of two sets\n7. Difference of two sets\n";
+		cout << "1. Create a set\n2. Print all sets\n3. Edit a set\n4. Delete a set\n5. Union of two sets\n6. Section of two sets\n7. Difference of two sets\n";
 		if(devMode)
 			cout << "0. Add dummy sets\n"; //Dev only
 		//Prints options:
@@ -42,7 +43,7 @@ void mainMenu(SET sets[], int setCount)
 		//	2. Prints all or one set
 		//	3. Edit a set -> change values or sort the set
 		//	4. Delete a set
-		//	5. Merge two sets
+		//	5. Union of two sets
 		//	6. Section of two sets
 		//	7. Difference of two sets
 		//	8. OPTIONAL: Save function
@@ -53,13 +54,15 @@ void mainMenu(SET sets[], int setCount)
 		switch (sym)
 		{
 		case 27: //Escape
+			lastInput = "";
 			inApp = false;
 			break;
 		case '1': //1. Create a new set
+			lastInput = "";
 			if (setCount <= 26)
 			{
-				createSet(sets[setCount].values);
-				sets[setCount].origin = "User Made Set";
+				createSet(sets[setCount]);
+				sets[setCount].name = char(setCount + 65);
 				setCount++;
 			}
 			else
@@ -68,6 +71,7 @@ void mainMenu(SET sets[], int setCount)
 			}
 			break;
 		case '2': //2. Prints all or one set
+			lastInput = "";
 			if (setCount > 0)
 			{
 				printSets(sets, setCount);
@@ -79,18 +83,54 @@ void mainMenu(SET sets[], int setCount)
 			}
 			break;
 		case '3': //3. Edit a set -> change values or sort the set
+			lastInput = "";
 
 			break;
 		case '4': //4. Delete a set
+			lastInput = "";
 			removeSet(sets, setCount);
 			break;
-		case '5': //5. Merge two sets
-
-			break;
+		case '5': //5. Union of two sets
 		case '6': //6. Section two sets
-
-			break;
 		case '7': //7. Difference of two sets
+			lastInput = "";
+
+			//TODO!!! Seperate from here -----------------------
+			printSets(sets, setCount, -1, false);
+
+			cout << "\nWhat sets would you like to use?\nFirst set: ";
+			firstId = 0;
+			secondId = 1;
+			putinInt(firstId);
+			//TODO!!! Make a num check fun -> num<=setCount && num>=0
+			cout << "\nSecond set: ";
+			putinInt(secondId);
+			//TODO!!! Make a num check fun -> num<=setCount && num>=0
+
+
+
+
+			//To here as a function! -----------------------
+
+			switch (sym)
+			{
+			case '5':
+				sets[setCount] = unionSets(sets[firstId], sets[secondId]);
+				sets[setCount].name = char(setCount + 65);
+				setCount++;
+				break;
+			case '6':
+
+				break;
+			case '7':
+
+				break;
+			default:
+				break;
+			}
+
+			printSets(sets, setCount, setCount);
+			cout << "\nUnion of " << sets[firstId].name << " and " << sets[secondId].name << " created.\n";
 
 			break;
 		case '0': //LOADS DUMMY SETS
@@ -104,6 +144,7 @@ void mainMenu(SET sets[], int setCount)
 					{
 						dummySet(sets[setCount].values);
 						sets[setCount].origin = "DUMMY SET";
+						sets[setCount].name = char(setCount + 65);
 						setCount++;
 					}
 					cout << "\n" << amount - mem << " DUMMY SETS ADDED...\n";
