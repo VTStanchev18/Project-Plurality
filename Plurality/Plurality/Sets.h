@@ -6,14 +6,14 @@
 #include <string>
 
 using namespace std;
-
+//Set Structure --------------<|
 struct SET
 {
 	string origin;
 	char name;
 	vector<int> values;
 };
-
+//Check if input is integer --<|
 void putinInt(int& num)
 {
 	cin >> num;
@@ -25,7 +25,7 @@ void putinInt(int& num)
 		cin >> num;
 	}
 }
-
+//Set Sorter Function --------<|
 void sortSet(vector<int>& set)
 {
 	int i, j;
@@ -75,7 +75,7 @@ void createSet(SET &set)
 
 	sortSet(set.values);
 }
-
+//Set printer ----------------<|
 void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
 {
 	system("CLS");
@@ -126,7 +126,7 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
 	if(wait)
 		_getch();
 }
-
+//Index Catcher --------------<|
 int getRemoveIndex(SET sets[], int setCount)
 {
 	system("CLS");
@@ -143,7 +143,7 @@ int getRemoveIndex(SET sets[], int setCount)
 
 	return index;
 }
-
+//Set Remover ----------------<|
 void removeSet(SET sets[], int& setCount) //TODO!!! ADD THE SET NAME INTO THE SET STRUCTURE =>	
 {
 	int index = getRemoveIndex(sets, setCount);
@@ -158,7 +158,7 @@ void removeSet(SET sets[], int& setCount) //TODO!!! ADD THE SET NAME INTO THE SE
 	}
 	setCount--;
 }
-
+//Dummy set creator ----------<|
 void dummySet(vector<int>& set)
 {
 	int len = rand() % 10 + 1;
@@ -171,7 +171,7 @@ void dummySet(vector<int>& set)
 
 	sortSet(set);
 }
-
+//Set Union maker func -------<|
 SET unionSets(SET A, SET B)
 {	
 	SET C;

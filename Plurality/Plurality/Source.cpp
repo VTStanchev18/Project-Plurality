@@ -22,6 +22,7 @@ int main()
 }
 
 //Main Functions --------------<|
+//Main Meny Function ----------<|
 void mainMenu(SET sets[], int setCount)
 {
 	bool inApp = true, devMode = false;
