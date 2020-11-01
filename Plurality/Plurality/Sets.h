@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "windows.h"
 
 using namespace std;
 
@@ -16,12 +17,78 @@ struct SET
 };
 
 //Functions ------------------<| 
+void err(int errorCode, char punctuation = '.', int speed = 1, bool clearScreen = false, bool wait = true)
+{
+	//Error Code
+	/*
+	1. No available space for a new set
+	2. No available sets
+	3. Not enough sets
+	4. Invalid input
+	5. Input was not an integer. Enter an integer.
+	6. Set size cannot be smaller than 0
+	7. Number is out of range
+	*/
+	if (clearScreen)
+		system("CLS");
+
+
+	cout << "\nError" << punctuation;
+
+	int sleepTime = 125 / speed;
+	for (int i = 0; i < 3; i++)
+	{
+		Sleep(sleepTime);
+		cout << '.';
+	}
+	cout << "\t";
+
+	switch (errorCode)
+	{
+	case 1:
+		cout << "There is no available space for a new set.";
+		break;
+	case 2:
+		cout << "There are no available sets";
+		break;
+	case 3:
+		cout << "There are not enough sets";
+		break;
+	case 4:
+		cout << "Invalid input. Enter a valid input";
+		break;
+	case 5:
+		cout << "Input was not an integer. Enter an integer";
+		break;
+	case 6:
+		cout << "Set size cannot be smaller than 0. Enter a bigger number";
+		break;
+	case 7:
+		cout << "Number is out of range";
+		break;
+	default:
+		break;
+	}
+
+	cout << punctuation;
+
+	for (int i = 0; i < 3; i++)
+	{
+		Sleep(sleepTime);
+		cout << '.';
+	}
+
+
+	if (wait)
+		_getch();
+}
+
 void putinInt(int& num) //Function to input and check an integer
 {
 	cin >> num;
 	while (!cin)
 	{
-		cout << "That was no integer! Please enter an integer: ";
+		err(5);
 		cin.clear();
 		cin.ignore();
 		cin >> num;
@@ -62,7 +129,7 @@ bool createSet(SET &set)
 		return false;
 	if (len <= 0)
 	{
-		cout << "Size cannot be smaller than 0";
+		err(6);
 		putinInt(len);
 	}
 	cout << "\nInput numbers into the set.\n";
@@ -129,7 +196,7 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true, bool 
 			cout << sets[j].values[i] << " ";
 			test += to_string(sets[j].values[i]) + ' ';
 		}
-		for (int i = 40 + longestVector - test.length(); i > 0; i--) //TODO!!! Make lenght based on the longest vector -> longest vector + 10 spaces
+		for (int i = 4 * longestVector - test.length(); i > 0; i--)
 		{
 			cout << ' ';
 		}
@@ -148,9 +215,11 @@ int getRemoveIndex(SET sets[], int setCount) //Function to get and check the ind
 	int index;
 	cout << "Choose the set to delete (number!)(-1 to exit): "; //TODO!!! MAKE IT POSSIBLE TO DELETE A SET BY CHOOSING A NAME
 	putinInt(index);
-	if (index != -1 or index >= setCount or index < 0)
+	if (index == -1)
+		return index;
+	if (index >= setCount or index < 0)
 	{
-		cout << "Error...\n";
+		err(7);
 		index = getRemoveIndex(sets, setCount);
 	}
 
@@ -187,7 +256,7 @@ void dummySet(SET& set) //Function to create sets at random -> dummy sets
 	sortSet(set);
 }
 
-int getIndex(int setCount) //Function to get and check the index before the remove function
+int getIndex(int setCount) //Function to get and check the index before the set function
 {
 	int index;
 	putinInt(index);
@@ -195,7 +264,7 @@ int getIndex(int setCount) //Function to get and check the index before the remo
 		return index;
 	if (index >= setCount or index < 0)
 	{
-		cout << "Error...\n";
+		err(7);
 		index = getIndex(setCount);
 	}
 

@@ -2,7 +2,8 @@
 #include <iostream>
 #include "conio.h"
 #include <vector>
-#include "time.h" 
+#include "time.h"
+#include "windows.h"
 
 #include "Sets.h"
 
@@ -16,7 +17,7 @@ int main()
 {
 	srand(time(NULL));
 		
-	SET sets[30];
+	struct SET sets[30];
 	int setCount = 0;
 	
 	mainMenu(sets, setCount);
@@ -50,8 +51,12 @@ void mainMenu(SET sets[], int setCount) //Main menu
 		//	6. Complement of two sets
 		//	7. OPTIONAL: Save function
 		//	8. OPTIONAL: Load function
+		//	9. OPTIONAL: Settings
 		//	0. Adds dummy sets
+		//	-. OPTIONAL: Credits
+		//	=. OPTIONAL: Explanation
 
+		operation = "";
 		char sym = _getch();
 		switch (sym)
 		{
@@ -61,7 +66,7 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			break;
 		case '1': //1. Create a new set
 			lastInput = "";
-			if (setCount <= 26)
+			if (setCount <= 25)
 			{
 				if (createSet(sets[setCount]))
 				{
@@ -70,25 +75,21 @@ void mainMenu(SET sets[], int setCount) //Main menu
 				}
 			}
 			else
-			{
-				cout << "\nError... \nNo more available space for a new set\n";
-			}
+				err(1);
 			break;
 		case '2': //2. Prints all or one set
 			lastInput = "";
 			if (setCount > 0)
-			{
 				printSets(sets, setCount);
-			}
 			else
-			{
-				cout << "\nError... \nNo available sets...\n";
-				_getch();
-			}
+				err(2);
 			break;
 		case '3': //4. Delete a set
 			lastInput = "";
-			removeSet(sets, setCount);
+			if(setCount > 0)
+				removeSet(sets, setCount);
+			else
+				err(2);
 			break;
 		case '4': //5. Union of two sets
 			operation = "Union of two sets";
@@ -102,10 +103,20 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			
 			lastInput = "";
 
+			if (setCount < 1)
+			{
+				err(3);
+				break;
+			}
+			if (setCount > 25)
+			{
+				err(1);
+				break;
+			}
+
 			printSets(sets, setCount, -1, false);
 
 			cout << "\n---</ " << operation << "\\>---";
-			operation = "";
 
 			firstId = 0;
 			secondId = 1;
@@ -150,22 +161,20 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			{
 				amount = rand() % 8 + 4 + setCount;
 				mem = setCount;
-				if (amount <= 26)
+				if (amount <= 25)
 				{
 					for (int i = setCount; i < amount; i++)
 					{
 						dummySet(sets[setCount]);
-						sets[setCount].origin = "DUMMY SET";
+						sets[setCount].origin = "Dummy Set";
 						sets[setCount].name = char(setCount + 65);
 						setCount++;
 					}
-					cout << "\n" << amount - mem << " DUMMY SETS ADDED...\n";
+					cout << "\n" << amount - mem << " Dummy Set(s) added...\n";
 					_getch();
 				}
 				else
-				{
-					cout << "No more available space for new sets\n";
-				}
+					err(1);
 			}
 			lastInput = "";
 			break;
@@ -178,6 +187,7 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			break;
 		default: //TODO!!! Add an error case = default case
 			lastInput = "";
+			err(4);
 			break;
 		}
 
