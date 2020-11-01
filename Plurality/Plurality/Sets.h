@@ -1,11 +1,12 @@
 #pragma once
 
-
+//Include and Using ----------<|
 #include <iostream>
 #include <vector>
 #include <string>
 
 using namespace std;
+
 //Set Structure --------------<|
 struct SET
 {
@@ -13,8 +14,9 @@ struct SET
 	char name;
 	vector<int> values;
 };
-//Check if input is integer --<|
-void putinInt(int& num)
+
+//Functions ------------------<| 
+void putinInt(int& num) //Function to input and check an integer
 {
 	cin >> num;
 	while (!cin)
@@ -25,21 +27,21 @@ void putinInt(int& num)
 		cin >> num;
 	}
 }
-//Set Sorter Function --------<|
-void sortSet(vector<int>& set)
+
+void sortSet(SET& set) //Function to sort a set in ascending order
 {
 	int i, j;
 	bool swapped;
-	for (i = 0; i < set.size(); i++)
+	for (i = 0; i < set.values.size(); i++)
 	{
 		swapped = false;
-		for (j = 0; j < set.size() - 1; j++)
+		for (j = 0; j < set.values.size() - 1; j++)
 		{
-			if (set[j] > set[j + 1])
+			if (set.values[j] > set.values[j + 1])
 			{
-				int temp = set[j];
-				set[j] = set[j + 1];
-				set[j + 1] = temp;
+				int temp = set.values[j];
+				set.values[j] = set.values[j + 1];
+				set.values[j + 1] = temp;
 				swapped = true;
 			}
 		}
@@ -49,14 +51,15 @@ void sortSet(vector<int>& set)
 	}
 }
 
-//Recreate this... -> use a set as an arguement
-void createSet(SET &set)
+bool createSet(SET &set)
 {
 	system("CLS");
 
 	int len;
-	cout << "Input set lenght.\n";
+	cout << "Input set lenght.(-1 to exit)\n";
 	putinInt(len);
+	if (len == -1)
+		return false;
 	if (len <= 0)
 	{
 		cout << "Size cannot be smaller than 0";
@@ -73,12 +76,22 @@ void createSet(SET &set)
 
 	set.origin = "User Made Set";
 
-	sortSet(set.values);
+	sortSet(set);
+	return true;
 }
-//Set printer ----------------<|
-void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
+
+void printSets(SET sets[], int setCount, int index = -1, bool wait = true, bool clearScreen = true) //Function to print sets
 {
-	system("CLS");
+//How to use
+/*
+=> sets[] -> array of structure SET
+=> setCount -> current size of sets array
+=> index -> if index == -1 all sets will be printed otherwise only the set pointed by the index will be printed
+=> wait -> if true, then the function will go through a _getch()
+=> wait -> if true, then the function will clear the screen at the begining
+*/
+	if(clearScreen)
+		system("CLS");
 	
 	int longestVector = 0;
 	int j = 0;
@@ -126,16 +139,16 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true)
 	if(wait)
 		_getch();
 }
-//Index Catcher --------------<|
-int getRemoveIndex(SET sets[], int setCount)
+
+int getRemoveIndex(SET sets[], int setCount) //Function to get and check the index before the remove function
 {
 	system("CLS");
 	printSets(sets, setCount, -1, false);
 
 	int index;
-	cout << "Choose the set to delete (number!): "; //TODO!!! MAKE IT POSSIBLE TO DELETE A SET BY CHOOSING A NAME
+	cout << "Choose the set to delete (number!)(-1 to exit): "; //TODO!!! MAKE IT POSSIBLE TO DELETE A SET BY CHOOSING A NAME
 	putinInt(index);
-	if (index >= setCount or index < 0)
+	if (index != -1 or index >= setCount or index < 0)
 	{
 		cout << "Error...\n";
 		index = getRemoveIndex(sets, setCount);
@@ -143,11 +156,13 @@ int getRemoveIndex(SET sets[], int setCount)
 
 	return index;
 }
-//Set Remover ----------------<|
-void removeSet(SET sets[], int& setCount) //TODO!!! ADD THE SET NAME INTO THE SET STRUCTURE =>	
+
+void removeSet(SET sets[], int& setCount) //Function to remove a set
 {
 	int index = getRemoveIndex(sets, setCount);
-	
+	if (index == -1)
+		return;
+
 	printSets(sets, setCount, index, false);
 	cout << "\n\nThis set WILL be DELETED FOREVER!\n";
 	_getch();
@@ -158,42 +173,118 @@ void removeSet(SET sets[], int& setCount) //TODO!!! ADD THE SET NAME INTO THE SE
 	}
 	setCount--;
 }
-//Dummy set creator ----------<|
-void dummySet(vector<int>& set)
+
+void dummySet(SET& set) //Function to create sets at random -> dummy sets
 {
 	int len = rand() % 10 + 1;
 
 	for (int i = 0; i < len; i++)
 	{
 		int a = rand()%60-29;
-		set.push_back(a);
+		set.values.push_back(a);
 	}
 
 	sortSet(set);
 }
-//Set Union maker func -------<|
-SET unionSets(SET A, SET B)
+
+int getIndex(int setCount) //Function to get and check the index before the remove function
+{
+	int index;
+	putinInt(index);
+	if (index == -1)
+		return index;
+	if (index >= setCount or index < 0)
+	{
+		cout << "Error...\n";
+		index = getIndex(setCount);
+	}
+
+	return index;
+}
+
+SET unionOfSets(SET A, SET B) //Function that returns a union of Set A and Set B
 {	
 	SET C;
 
 	string origin = "Union of ";
-	origin += A.name; +" and " + B.name;
-	origin += " and "; +B.name;
-	origin += B.name;	
+	origin += A.name;
+	origin += " and ";
+	origin += B.name;
 	C.origin = origin;
 	
-	int j = 0;
+	int index = 0;
 	C.values.resize(A.values.size() + B.values.size());
 	for (int i = 0; i < A.values.size(); i++)
 	{
-		C.values[j] = A.values[i];
-		j++;
+		C.values[index] = A.values[i];
+		index++;
 	}
 
 	for (int i = 0; i < B.values.size(); i++)
 	{
-		C.values[j] = B.values[i];
-		j++;
+		C.values[index] = B.values[i];
+		index++;
+	}
+
+	return C;
+}
+
+SET intersectionOfSets(SET A, SET B) //Function that returns an intersection of Set A and Set B
+{
+	SET C;
+
+	string origin = "Intersection of ";
+	origin += A.name;
+	origin += " and ";
+	origin += B.name;
+	C.origin = origin;
+
+	for (int i = 0; i < A.values.size(); i++)
+	{
+		for (int j = 0; j < B.values.size(); j++)
+		{
+			if (B.values[j] != 299792458 and A.values[i] == B.values[j])
+			{
+				C.values.push_back(A.values[i]);
+				B.values[j] = 299792458;
+				break;
+			}
+		}
+	}
+
+	return C;
+}
+
+SET complementOfSets(SET A, SET B) //Function that returns the complement of Set A in Set B
+{
+	SET C;
+
+	string origin = "Complement of ";
+	origin += A.name;
+	origin += " in ";
+	origin += B.name;
+	C.origin = origin;
+
+	SET _C = intersectionOfSets(A, B);
+
+	for (int i = 0; i < A.values.size(); i++)
+	{
+		for (int j = 0; j < _C.values.size(); j++)
+		{
+			if (A.values[i] == _C.values[j])
+			{
+				A.values[i] = 299792458;
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < A.values.size(); i++)
+	{
+		if (A.values[i] != 299792458)
+		{
+			C.values.push_back(A.values[i]);
+		}
 	}
 
 	return C;

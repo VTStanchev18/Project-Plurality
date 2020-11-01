@@ -8,47 +8,48 @@
 
 using namespace std;
 
+//Functions -------------------<|
 void mainMenu(SET sets[], int setCount);
 
 //Main ------------------------<|
 int main()
 {
 	srand(time(NULL));
-
+		
 	SET sets[30];
 	int setCount = 0;
 	
 	mainMenu(sets, setCount);
 }
 
-//Main Functions --------------<|
-//Main Meny Function ----------<|
-void mainMenu(SET sets[], int setCount)
+//Functions -------------------<|
+void mainMenu(SET sets[], int setCount) //Main menu
+
 {
-	bool inApp = true, devMode = false;
+	bool inApp = true, devMode = true; //IMPORTANT!!! Turn devMode to false in release version
 	int amount = 0, mem = 0;
 	int firstId = 0, secondId = 1;
 	string lastInput = "";
-	string code = "wwssadadba";
+	string code = "wwssadadba"; //Konami code
+	string operation = "";
 	while (inApp)
 	{
 		system("CLS");
 		cout << "---- M E N U ----\n";
 		cout << setCount << "\\" << 26 << "\n";
-		cout << "1. Create a set\n2. Print all sets\n3. Edit a set\n4. Delete a set\n5. Union of two sets\n6. Section of two sets\n7. Difference of two sets\n";
+		cout << "1. Create a set\n2. Print all sets\n3. Delete a set\n4. Union of two sets\n5. Intersection of two sets\n6. Complement of two sets\n";
 		if(devMode)
 			cout << "0. Add dummy sets\n"; //Dev only
 		//Prints options:
 		//	Esc. Go back -> quit
 		//	1. Create a new set
 		//	2. Prints all or one set
-		//	3. Edit a set -> change values or sort the set
-		//	4. Delete a set
-		//	5. Union of two sets
-		//	6. Section of two sets
-		//	7. Difference of two sets
-		//	8. OPTIONAL: Save function
-		//	9. OPTIONAL: Load function
+		//	3. Delete a set
+		//	4. Union of two sets
+		//	5. Intersection of two sets
+		//	6. Complement of two sets
+		//	7. OPTIONAL: Save function
+		//	8. OPTIONAL: Load function
 		//	0. Adds dummy sets
 
 		char sym = _getch();
@@ -62,13 +63,15 @@ void mainMenu(SET sets[], int setCount)
 			lastInput = "";
 			if (setCount <= 26)
 			{
-				createSet(sets[setCount]);
-				sets[setCount].name = char(setCount + 65);
-				setCount++;
+				if (createSet(sets[setCount]))
+				{
+					sets[setCount].name = char(setCount + 65);
+					setCount++;
+				}
 			}
 			else
 			{
-				cout << "No more available space for a new set\n";
+				cout << "\nError... \nNo more available space for a new set\n";
 			}
 			break;
 		case '2': //2. Prints all or one set
@@ -79,60 +82,68 @@ void mainMenu(SET sets[], int setCount)
 			}
 			else
 			{
-				cout << "\nError... \nNo available sets...";
+				cout << "\nError... \nNo available sets...\n";
 				_getch();
 			}
 			break;
-		case '3': //3. Edit a set -> change values or sort the set
-			lastInput = "";
-
-			break;
-		case '4': //4. Delete a set
+		case '3': //4. Delete a set
 			lastInput = "";
 			removeSet(sets, setCount);
 			break;
-		case '5': //5. Union of two sets
-		case '6': //6. Section two sets
-		case '7': //7. Difference of two sets
+		case '4': //5. Union of two sets
+			operation = "Union of two sets";
+			goto start;
+		case '5': //6. Intersection of two sets
+			operation = "Intersection of two sets";
+			goto start;
+		case '6': //7. Complement of one set in another
+			operation = "Complement of one set in another";
+			start:
+			
 			lastInput = "";
 
-			//TODO!!! Seperate from here -----------------------
 			printSets(sets, setCount, -1, false);
 
-			cout << "\nWhat sets would you like to use?\nFirst set: ";
+			cout << "\n---</ " << operation << "\\>---";
+			operation = "";
+
 			firstId = 0;
 			secondId = 1;
-			putinInt(firstId);
-			//TODO!!! Make a num check fun -> num<=setCount && num>=0
-			cout << "\nSecond set: ";
-			putinInt(secondId);
-			//TODO!!! Make a num check fun -> num<=setCount && num>=0
-
-
-
-
-			//To here as a function! -----------------------
+			cout << "\nWhat sets would you like to use?(-1 to exit)\nFirst set: ";
+			firstId = getIndex(setCount);
+			if (firstId == -1)
+				break;
+			cout << "Second set: ";
+			secondId = getIndex(setCount);
+			if (secondId == -1)
+				break;
 
 			switch (sym)
 			{
-			case '5':
-				sets[setCount] = unionSets(sets[firstId], sets[secondId]);
+			case '4':
+				sets[setCount] = unionOfSets(sets[firstId], sets[secondId]);
 				sets[setCount].name = char(setCount + 65);
-				setCount++;
+				break;
+			case '5':
+				sets[setCount] = intersectionOfSets(sets[firstId], sets[secondId]);
+				sets[setCount].name = char(setCount + 65);
 				break;
 			case '6':
-
-				break;
-			case '7':
-
+				sets[setCount] = complementOfSets(sets[firstId], sets[secondId]);
+				sets[setCount].name = char(setCount + 65);
 				break;
 			default:
 				break;
 			}
 
-			printSets(sets, setCount, setCount);
-			cout << "\nUnion of " << sets[firstId].name << " and " << sets[secondId].name << " created.\n";
+			sortSet(sets[setCount]);
+			
+			system("CLS");
+			cout << sets[setCount].origin << " created.\n";
+			printSets(sets, setCount + 1, setCount, false, false);
+			setCount++;
 
+			_getch();
 			break;
 		case '0': //LOADS DUMMY SETS
 			if (devMode)
@@ -143,7 +154,7 @@ void mainMenu(SET sets[], int setCount)
 				{
 					for (int i = setCount; i < amount; i++)
 					{
-						dummySet(sets[setCount].values);
+						dummySet(sets[setCount]);
 						sets[setCount].origin = "DUMMY SET";
 						sets[setCount].name = char(setCount + 65);
 						setCount++;
