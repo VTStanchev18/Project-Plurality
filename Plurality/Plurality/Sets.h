@@ -5,20 +5,31 @@
 #include <vector>
 #include <string>
 #include "windows.h"
+#include "conio.h"
+#include "time.h"
 
 using namespace std;
 
 //Set Structure --------------<|
 struct SET
 {
-	string origin;
-	char name;
-	vector<int> values;
+	string origin; //How was the set created
+	char name; //The name of the set
+	vector<int> values; //The values that belong to the set
 };
 
 //Functions ------------------<| 
-void err(int errorCode, char punctuation = '.', int speed = 1, bool clearScreen = false, bool wait = true)
+void err(int errorCode, char punctuation = '.', int speed = 1, bool wait = false, bool clearScreen = true)
 {
+	//How to use
+	/*
+	=> errorCode -> code for the current error
+	=> punctuation -> char for error punctuation
+	=> speed -> changes the speed of the punctuation
+	=> wait -> if true, then the function will go through a _getch()
+	=> clearScreen -> if true, then the function will clear the screen at the begining
+	*/
+
 	//Error Code
 	/*
 	1. No available space for a new set
@@ -83,6 +94,39 @@ void err(int errorCode, char punctuation = '.', int speed = 1, bool clearScreen 
 		_getch();
 }
 
+//Think of a shorter name... pls... baka
+bool checkIfThereIsAvailableSpaceForASet(int setCount)
+{
+	if (setCount <= 25)
+		return true;
+	else
+		err(1);
+
+	return false;
+}
+
+//Think of a shorter name... pls... baka
+bool checkIfThereAreAvailableSets(int setCount)
+{
+	if (setCount > 0)
+		return true;
+	else
+		err(2);
+
+	return false;
+}
+
+//Think of a shorter name... pls... baka
+bool checkIfThereAreEnoughSets(int setCount)
+{
+	if (setCount >= 1)
+		return true;
+	else
+		err(2);
+
+	return false;
+}
+
 void putinInt(int& num) //Function to input and check an integer
 {
 	cin >> num;
@@ -118,15 +162,18 @@ void sortSet(SET& set) //Function to sort a set in ascending order
 	}
 }
 
-bool createSet(SET &set)
+void createSet(SET& set, int& setCount)
 {
 	system("CLS");
+
+	if (!checkIfThereIsAvailableSpaceForASet(setCount))
+		return;
 
 	int len;
 	cout << "Input set lenght.(-1 to exit)\n";
 	putinInt(len);
 	if (len == -1)
-		return false;
+		return;
 	if (len <= 0)
 	{
 		err(6);
@@ -143,23 +190,29 @@ bool createSet(SET &set)
 
 	set.origin = "User Made Set";
 
+	set.name = char(setCount + 65);
+	setCount++;
+
 	sortSet(set);
-	return true;
+	return;
 }
 
-void printSets(SET sets[], int setCount, int index = -1, bool wait = true, bool clearScreen = true) //Function to print sets
+void printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool clearScreen = true) //Function to print sets
 {
-//How to use
-/*
-=> sets[] -> array of structure SET
-=> setCount -> current size of sets array
-=> index -> if index == -1 all sets will be printed otherwise only the set pointed by the index will be printed
-=> wait -> if true, then the function will go through a _getch()
-=> wait -> if true, then the function will clear the screen at the begining
-*/
-	if(clearScreen)
+	//How to use
+	/*
+	=>* sets -> array of structure SET
+	=> setCount -> current size of sets array
+	=> index -> if index == -1 all sets will be printed otherwise only the set pointed by the index will be printed
+	=> wait -> if true, then the function will go through a _getch()
+	=> clearScreen -> if true, then the function will clear the screen at the begining
+	*/
+	if (!checkIfThereAreAvailableSets(setCount))
+		return;
+
+	if (clearScreen)
 		system("CLS");
-	
+
 	int longestVector = 0;
 	int j = 0;
 	int max = setCount;
@@ -203,11 +256,11 @@ void printSets(SET sets[], int setCount, int index = -1, bool wait = true, bool 
 		cout << "-=> " << sets[j].origin << "\n";
 	}
 
-	if(wait)
+	if (wait)
 		_getch();
 }
 
-int getRemoveIndex(SET sets[], int setCount) //Function to get and check the index before the remove function
+int getRemoveIndex(SET* sets, int setCount) //Function to get and check the index before the remove function
 {
 	system("CLS");
 	printSets(sets, setCount, -1, false);
@@ -226,8 +279,19 @@ int getRemoveIndex(SET sets[], int setCount) //Function to get and check the ind
 	return index;
 }
 
-void removeSet(SET sets[], int& setCount) //Function to remove a set
+void renameSets(SET* sets, int& setCount)
 {
+	for (int i = 0; i < setCount; i++)
+	{
+		sets[i].name = char(i + 65);
+	}
+}
+
+void removeSet(SET* sets, int& setCount) //Function to remove a set
+{
+	if (!checkIfThereAreAvailableSets(setCount))
+		return;
+
 	int index = getRemoveIndex(sets, setCount);
 	if (index == -1)
 		return;
@@ -241,19 +305,31 @@ void removeSet(SET sets[], int& setCount) //Function to remove a set
 		sets[i] = sets[i + 1];
 	}
 	setCount--;
+
+	renameSets(sets, setCount);
 }
 
-void dummySet(SET& set) //Function to create sets at random -> dummy sets
+bool dummySet(SET& set, int& setCount) //Function to create sets at random -> dummy sets
 {
+	if (!checkIfThereIsAvailableSpaceForASet(setCount))
+		return false;
+
 	int len = rand() % 10 + 1;
 
 	for (int i = 0; i < len; i++)
 	{
-		int a = rand()%60-29;
+		int a = rand() % 60 - 29;
 		set.values.push_back(a);
+		Sleep(10);
 	}
 
+	set.name = char(setCount + 65);
+	set.origin = "Dummy Set";
+	setCount++;
+
 	sortSet(set);
+
+	return true;
 }
 
 int getIndex(int setCount) //Function to get and check the index before the set function
@@ -271,16 +347,23 @@ int getIndex(int setCount) //Function to get and check the index before the set 
 	return index;
 }
 
-SET unionOfSets(SET A, SET B) //Function that returns a union of Set A and Set B
-{	
-	SET C;
+bool unionOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns a union of Set A and Set B
+{
+	if (checkIfThereIsAvailableSpaceForASet(setCount))
+		return false;
+
+	if (checkIfThereAreEnoughSets(setCount))
+		return false;
 
 	string origin = "Union of ";
 	origin += A.name;
 	origin += " and ";
 	origin += B.name;
 	C.origin = origin;
-	
+
+	C.name = char(setCount + 65);
+	setCount++;
+
 	int index = 0;
 	C.values.resize(A.values.size() + B.values.size());
 	for (int i = 0; i < A.values.size(); i++)
@@ -295,18 +378,30 @@ SET unionOfSets(SET A, SET B) //Function that returns a union of Set A and Set B
 		index++;
 	}
 
-	return C;
+	sortSet(C);
+
+	return true;
 }
 
-SET intersectionOfSets(SET A, SET B) //Function that returns an intersection of Set A and Set B
+bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = false) //Function that returns an intersection of Set A and Set B
 {
-	SET C;
+	if (!temporary)
+	{
+		if (checkIfThereIsAvailableSpaceForASet(setCount))
+			return false;
 
-	string origin = "Intersection of ";
-	origin += A.name;
-	origin += " and ";
-	origin += B.name;
-	C.origin = origin;
+		if (checkIfThereAreEnoughSets(setCount))
+			return false;
+
+		string origin = "Intersection of ";
+		origin += A.name;
+		origin += " and ";
+		origin += B.name;
+		C.origin = origin;
+
+		C.name = char(setCount + 65);
+		setCount++;
+	}
 
 	for (int i = 0; i < A.values.size(); i++)
 	{
@@ -321,12 +416,18 @@ SET intersectionOfSets(SET A, SET B) //Function that returns an intersection of 
 		}
 	}
 
-	return C;
+	sortSet(C);
+
+	return true;
 }
 
-SET complementOfSets(SET A, SET B) //Function that returns the complement of Set A in Set B
+bool complementOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns the complement of Set A in Set B
 {
-	SET C;
+	if (checkIfThereIsAvailableSpaceForASet(setCount))
+		return false;
+
+	if (checkIfThereAreEnoughSets(setCount))
+		return false;
 
 	string origin = "Complement of ";
 	origin += A.name;
@@ -334,7 +435,11 @@ SET complementOfSets(SET A, SET B) //Function that returns the complement of Set
 	origin += B.name;
 	C.origin = origin;
 
-	SET _C = intersectionOfSets(A, B);
+	C.name = char(setCount + 65);
+	setCount++;
+
+	SET _C;
+	intersectionOfSets(A, B, _C, setCount, true);
 
 	for (int i = 0; i < A.values.size(); i++)
 	{
@@ -356,5 +461,7 @@ SET complementOfSets(SET A, SET B) //Function that returns the complement of Set
 		}
 	}
 
-	return C;
+	sortSet(C);
+
+	return true;
 }

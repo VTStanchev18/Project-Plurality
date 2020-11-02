@@ -12,38 +12,37 @@ using namespace std;
 //Functions -------------------<|
 void quote(string quote, int multiplier = 1);
 
-void mainMenu(SET sets[], int setCount);
+void mainMenu(SET* sets, int setCount);
 
 //Main ------------------------<|
 int main()
 {
 	srand(time(NULL));
-		
+
 	struct SET sets[30];
 	int setCount = 0;
-	
+
 	mainMenu(sets, setCount);
 }
 
 //Functions -------------------<|
-void mainMenu(SET sets[], int setCount) //Main menu
-
+void mainMenu(SET* sets, int setCount) //Main menu
 {
-	bool inApp = true, devMode = true; //IMPORTANT!!! Turn devMode to false in release version
+	bool inApp = true, operationState = false, devMode = false; //IMPORTANT!!! Turn devMode to false in release version
 	int amount = 0, mem = 0;
 	int firstId = 0, secondId = 1;
 
 	string lastInput = "";
-	string quotesEgg1[] = {"They are rage, brutal, without mercy. But you. You will be worse. Rip and tear, until it is done...","Against all the evil that Hell can conjure, all the wickedness that mankind can produce, we will send unto them... only you. Rip and tear, until it is done..." };
-	
+	string quotesEgg1[] = { "They are rage, brutal, without mercy. But you. You will be worse. Rip and tear, until it is done...","Against all the evil that Hell can conjure, all the wickedness that mankind can produce, we will send unto them... only you. Rip and tear, until it is done..." };
+
 	string operation = "";
+
 	while (inApp)
 	{
-		system("CLS");
 		cout << "---- M E N U ----\n";
 		cout << setCount << "\\" << 26 << "\n";
 		cout << "1. Create a set\n2. Print all sets\n3. Delete a set\n4. Union of two sets\n5. Intersection of two sets\n6. Complement of two sets\n";
-		if(devMode)
+		if (devMode)
 			cout << "0. Add dummy sets\n"; //Dev only
 		//Prints options:
 		//	Esc. Go back -> quit
@@ -60,7 +59,6 @@ void mainMenu(SET sets[], int setCount) //Main menu
 		//	-. OPTIONAL: Credits
 		//	=. OPTIONAL: Explanation
 
-		cout << "\n" << lastInput;
 		operation = "";
 		char sym = _getch();
 
@@ -72,30 +70,15 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			break;
 		case '1': //1. Create a new set
 			lastInput = "";
-			if (setCount <= 25)
-			{
-				if (createSet(sets[setCount]))
-				{
-					sets[setCount].name = char(setCount + 65);
-					setCount++;
-				}
-			}
-			else
-				err(1);
+			createSet(sets[setCount], setCount);
 			break;
 		case '2': //2. Prints all or one set
 			lastInput = "";
-			if (setCount > 0)
-				printSets(sets, setCount);
-			else
-				err(2);
+			printSets(sets, setCount);
 			break;
 		case '3': //4. Delete a set
 			lastInput = "";
-			if(setCount > 0)
-				removeSet(sets, setCount);
-			else
-				err(2);
+			removeSet(sets, setCount);
 			break;
 		case '4': //5. Union of two sets
 			operation = "Union of two sets";
@@ -105,20 +88,10 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			goto start;
 		case '6': //7. Complement of one set in another
 			operation = "Complement of one set in another";
-			start:
-			
-			lastInput = "";
+		start:
 
-			if (setCount < 1)
-			{
-				err(3);
-				break;
-			}
-			if (setCount > 25)
-			{
-				err(1);
-				break;
-			}
+			lastInput = "";
+			operationState = false;
 
 			printSets(sets, setCount, -1, false);
 
@@ -138,51 +111,46 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			switch (sym)
 			{
 			case '4':
-				sets[setCount] = unionOfSets(sets[firstId], sets[secondId]);
-				sets[setCount].name = char(setCount + 65);
+				operationState = unionOfSets(sets[firstId], sets[secondId], sets[setCount + 1], setCount);
 				break;
 			case '5':
-				sets[setCount] = intersectionOfSets(sets[firstId], sets[secondId]);
-				sets[setCount].name = char(setCount + 65);
+				operationState = intersectionOfSets(sets[firstId], sets[secondId], sets[setCount + 1], setCount);
 				break;
 			case '6':
-				sets[setCount] = complementOfSets(sets[firstId], sets[secondId]);
-				sets[setCount].name = char(setCount + 65);
+				operationState = complementOfSets(sets[firstId], sets[secondId], sets[setCount + 1], setCount);
 				break;
 			default:
 				break;
 			}
 
-			sortSet(sets[setCount]);
-			
-			system("CLS");
-			cout << sets[setCount].origin << " created.\n";
-			printSets(sets, setCount + 1, setCount, false, false);
-			setCount++;
+			if (operationState)
+			{
+				system("CLS");
+				cout << sets[setCount].origin << " created.\n";
+				printSets(sets, setCount + 1, setCount, false, false);
+				_getch();
+			}
 
-			_getch();
 			break;
 		case '0': //LOADS DUMMY SETS
+			lastInput = "";
 			if (devMode)
 			{
+				operationState = false;
 				amount = rand() % 8 + 4 + setCount;
 				mem = setCount;
-				if (amount <= 25)
+
+				for (int i = mem; i < amount; i++)
 				{
-					for (int i = setCount; i < amount; i++)
-					{
-						dummySet(sets[setCount]);
-						sets[setCount].origin = "Dummy Set";
-						sets[setCount].name = char(setCount + 65);
-						setCount++;
-					}
-					cout << "\n" << amount - mem << " Dummy Set(s) added...\n";
-					_getch();
+					operationState = dummySet(sets[setCount], setCount);
+					if (!operationState)
+						break;
 				}
-				else
-					err(1);
+
+
+				cout << "\n" << amount - mem << " Dummy Set(s) added...\n";
+				_getch();
 			}
-			lastInput = "";
 			break;
 		case 'w':
 		case 's':
@@ -200,8 +168,12 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			break;
 		}
 
-		if(lastInput == "wwssadadba")
+		system("CLS");
+		cout << lastInput << "\n";
+
+		if (lastInput == "wwssadadba")
 		{
+			PlaySound(TEXT("ExtraFiles\\Secret.wav"), NULL, SND_ASYNC);
 			devMode = !devMode;
 			cout << "\n\nDEV MODE ";
 			if (devMode)
@@ -210,12 +182,14 @@ void mainMenu(SET sets[], int setCount) //Main menu
 				cout << "DEACTIVATED!";
 			lastInput = "";
 			_getch();
+			system("CLS");
+			PlaySound(NULL, NULL, SND_ASYNC);
 		}
 
 		if (lastInput == "idkfa")
 		{
 			system("CLS");
-			
+
 			int random = rand() % 3 - 1;
 			switch (random)
 			{
@@ -264,13 +238,13 @@ void mainMenu(SET sets[], int setCount) //Main menu
 				break;
 			case 0:
 				PlaySound(TEXT("ExtraFiles\\Doom'sGate2016.wav"), NULL, SND_ASYNC);
-				Sleep(8000);	
+				Sleep(8000);
 				quote(quotesEgg1[random], 3);
-				Sleep(1000);	
+				Sleep(1000);
 				break;
 			case 1:
 				PlaySound(TEXT("ExtraFiles\\Doom'sGateEternal.wav"), NULL, SND_ASYNC);
-				Sleep(8000);	
+				Sleep(8000);
 				quote(quotesEgg1[random], 5);
 				Sleep(1000);
 				break;
@@ -279,12 +253,13 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			}
 
 			lastInput = "";
+
 			_getch();
 			_getch();
 			_getch();
+
 			PlaySound(NULL, NULL, SND_ASYNC);
 		}
-	
 	}
 }
 
