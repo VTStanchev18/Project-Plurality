@@ -1,7 +1,8 @@
 //Include and Using -----------<|
 #include <iostream>
-#include "conio.h"
 #include <vector>
+#include <string>
+#include "conio.h"
 #include "time.h"
 #include "windows.h"
 
@@ -32,18 +33,23 @@ void mainMenu(SET* sets, int setCount) //Main menu
 	int amount = 0, mem = 0;
 	int firstId = 0, secondId = 1;
 
+	string tempStr = "";
 	string lastInput = "";
-	string quotesEgg1[] = { "They are rage, brutal, without mercy. But you. You will be worse. Rip and tear, until it is done...","Against all the evil that Hell can conjure, all the wickedness that mankind can produce, we will send unto them... only you. Rip and tear, until it is done..." };
-
+	
+	string quotesEgg1[] = { "They are rage, #brutal, #without mercy.\nBut you...\n##You will be worse.\n#Rip #and #tear, ##until it is done...","Against all the evil that Hell can conjure,\n#all the wickedness that mankind can produce,\n##we will send unto them...\n#only #you.\n##Rip #and #tear, ##until it is done..." };
+	string DOOM = "=================     ===============     ===============   ========  ========\n\\\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .\\\\// . . //\n||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||\n|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||\n||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||\n|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||_.|\\ . . . . ||\n||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||\n|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\\ `-_/| . ||\n||_-' ||  .|/    || ||    \\|.  || `-_|| ||_-' ||  .|/    || ||   | \\  / |-_.||\n||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \\  / |  `||\n||    `'         || ||         `'    || ||    `'         || ||   | \\  / |   ||\n||            .===' `===.         .==='.`===.         .===' /==. |  \\/  |   ||\n||         .=='   \\_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \\/  |   ||\n||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \\/  |   ||\n||   .=='    _-'          `-__\\._-'         `-_./__-'         `' |. /|  |   ||\n||.=='    _-'                                                     `' |  /==.||\n=='    _-'                                                            \\/   `==\n\\   _-'                                                                `-_   /\n";
 	string operation = "";
 
 	while (inApp)
 	{
+		if (devMode)
+			cout << "DevMode is ON\n";
 		cout << "---- M E N U ----\n";
 		cout << setCount << "\\" << 26 << "\n";
 		cout << "1. Create a set\n2. Print all sets\n3. Delete a set\n4. Union of two sets\n5. Intersection of two sets\n6. Complement of two sets\n";
 		if (devMode)
 			cout << "0. Add dummy sets\n"; //Dev only
+		cout << "Esc. Quit the program\n";
 		//Prints options:
 		//	Esc. Go back -> quit
 		//	1. Create a new set
@@ -64,7 +70,11 @@ void mainMenu(SET* sets, int setCount) //Main menu
 
 		switch (sym)
 		{
-		case 27: //Escape
+		case 8: //Backspace -> removes the last char of the cheat code
+			tempStr = lastInput;
+			lastInput = tempStr.substr(0, tempStr.size() - 1);
+			break;
+		case 27: //Escape -> quits the program
 			lastInput = "";
 			inApp = false;
 			break;
@@ -93,7 +103,8 @@ void mainMenu(SET* sets, int setCount) //Main menu
 			lastInput = "";
 			operationState = false;
 
-			printSets(sets, setCount, -1, false);
+			if (!printSets(sets, setCount, -1, false))
+				break;
 
 			cout << "\n---</ " << operation << "\\>---";
 
@@ -123,13 +134,13 @@ void mainMenu(SET* sets, int setCount) //Main menu
 				break;
 			}
 
-			if (operationState)
-			{
-				system("CLS");
-				cout << sets[setCount].origin << " created.\n";
-				printSets(sets, setCount + 1, setCount, false, false);
-				_getch();
-			}
+			if (!operationState)
+				break;
+			
+			system("CLS");
+			cout << sets[setCount].origin << " created.\n";
+			printSets(sets, setCount + 1, setCount, false, false);
+			_getch();
 
 			break;
 		case '0': //LOADS DUMMY SETS
@@ -152,28 +163,29 @@ void mainMenu(SET* sets, int setCount) //Main menu
 				_getch();
 			}
 			break;
-		case 'w':
-		case 's':
-		case 'a':
-		case 'd':
-		case 'b':
-		case 'i':
-		case 'k':
-		case 'f':
-			lastInput += sym;
-			break;
 		default:
-			lastInput = "";
-			err(4);
+			lastInput += sym;
 			break;
 		}
 
+
+
+		if (lastInput.length() > 15)
+		{
+			lastInput = "";
+			cout << "\nYou didn't say the magic word..."; //I'm wondering if I should add audio? https://www.youtube.com/watch?v=K3PrSj9XEu4&ab_channel=BJ22CS
+			Sleep(600);
+		}
+		
 		system("CLS");
-		cout << lastInput << "\n";
+
+		if(!lastInput.empty())
+			cout << lastInput << "\n";
 
 		if (lastInput == "wwssadadba")
 		{
-			PlaySound(TEXT("ExtraFiles\\Secret.wav"), NULL, SND_ASYNC);
+			if(!devMode)
+				PlaySound(TEXT("ExtraFiles\\Secret.wav"), NULL, SND_ASYNC);
 			devMode = !devMode;
 			cout << "\n\nDEV MODE ";
 			if (devMode)
@@ -214,39 +226,25 @@ void mainMenu(SET* sets, int setCount) //Main menu
 				=='    _-'                                                            \/   `==
 				\   _-'                                                                `-_   /
 				*/
-				cout << "\n" << "=================     ===============     ===============   ========  ========";
-				cout << "\n" << "\\\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .\\\\// . . //";
-				cout << "\n" << "||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||";
-				cout << "\n" << "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||";
-				cout << "\n" << "||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||";
-				cout << "\n" << "|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\\ . . . . ||";
-				cout << "\n" << "||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||";
-				cout << "\n" << "|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\\ `-_/| . ||";
-				cout << "\n" << "||_-' ||  .|/    || ||    \\|.  || `-_|| ||_-' ||  .|/    || ||   | \\  / |-_.||";
-				cout << "\n" << "||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \\  / |  `||";
-				cout << "\n" << "||    `'         || ||         `'    || ||    `'         || ||   | \\  / |   ||";
-				cout << "\n" << "||            .===' `===.         .==='.`===.         .===' /==. |  \\/  |   ||";
-				cout << "\n" << "||         .=='   \\_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \\/  |   ||";
-				cout << "\n" << "||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \\/  |   ||";
-				cout << "\n" << "||   .=='    _-'          `-__\\._-'         `-_./__-'         `' |. /|  |   ||";
-				cout << "\n" << "||.=='    _-'                                                     `' |  /==.||";
-				cout << "\n" << "=='    _-'                                                            \\/   `==";
-				cout << "\n" << "\\   _-'                                                                `-_   /";
-
 				PlaySound(TEXT("ExtraFiles\\E1M1Doom.wav"), NULL, SND_ASYNC);
-				Sleep(10000);
+				for (size_t i = 0; i < DOOM.length(); i++)
+				{
+					cout << DOOM[i];
+					if (i % 4 == 0) //If it is too fast change it to 2
+					{
+						Sleep(50);
+					}
+				}
 				break;
 			case 0:
 				PlaySound(TEXT("ExtraFiles\\Doom'sGate2016.wav"), NULL, SND_ASYNC);
-				Sleep(8000);
-				quote(quotesEgg1[random], 3);
-				Sleep(1000);
+				Sleep(12000);
+				quote(quotesEgg1[random], 2);
 				break;
 			case 1:
 				PlaySound(TEXT("ExtraFiles\\Doom'sGateEternal.wav"), NULL, SND_ASYNC);
-				Sleep(8000);
-				quote(quotesEgg1[random], 5);
-				Sleep(1000);
+				Sleep(16000);
+				quote(quotesEgg1[random], 3);
 				break;
 			default:
 				break;
@@ -266,22 +264,32 @@ void quote(string quote, int multiplier)
 {
 	for (int i = 0; i < quote.length(); i++)
 	{
-		cout << quote[i];
+		if(quote[i] != '#')
+			cout << quote[i];
+
 		switch (quote[i])
 		{
+		case '#':
+			Sleep(250 * multiplier);
+			break;
+		case '\n':
+			Sleep(650 * multiplier);
+			break;
 		case ' ':
 			Sleep(100 * multiplier);
 			break;
-		case '.':
 		case ',':
+			Sleep(200 * multiplier);
+			break;
+		case '.':
 		case ';':
 		case ':':
 		case '?':
 		case '!':
-			Sleep(200 * multiplier);
+			Sleep(250 * multiplier);
 			break;
 		default:
-			Sleep(50 * multiplier);
+			Sleep(100);
 			break;
 		}
 	}

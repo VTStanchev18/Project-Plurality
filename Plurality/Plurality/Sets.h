@@ -102,6 +102,7 @@ bool checkIfThereIsAvailableSpaceForASet(int setCount)
 	else
 		err(1);
 
+	_getch();
 	return false;
 }
 
@@ -113,6 +114,7 @@ bool checkIfThereAreAvailableSets(int setCount)
 	else
 		err(2);
 
+	_getch();
 	return false;
 }
 
@@ -124,6 +126,7 @@ bool checkIfThereAreEnoughSets(int setCount)
 	else
 		err(2);
 
+	_getch();
 	return false;
 }
 
@@ -197,7 +200,7 @@ void createSet(SET& set, int& setCount)
 	return;
 }
 
-void printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool clearScreen = true) //Function to print sets
+bool printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool clearScreen = true) //Function to print sets
 {
 	//How to use
 	/*
@@ -208,7 +211,7 @@ void printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool c
 	=> clearScreen -> if true, then the function will clear the screen at the begining
 	*/
 	if (!checkIfThereAreAvailableSets(setCount))
-		return;
+		return false;
 
 	if (clearScreen)
 		system("CLS");
@@ -258,6 +261,8 @@ void printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool c
 
 	if (wait)
 		_getch();
+
+	return true;
 }
 
 int getRemoveIndex(SET* sets, int setCount) //Function to get and check the index before the remove function
