@@ -255,10 +255,9 @@ void mainMenu(SET* sets, int setCount) //Main menu
 			lastInput = "";
 
 			_getch();
-			_getch();
-			_getch();
 
 			PlaySound(NULL, NULL, SND_ASYNC);
+			system("CLS");
 		}
 	}
 }

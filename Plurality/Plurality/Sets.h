@@ -213,7 +213,7 @@ void printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool c
 	if (clearScreen)
 		system("CLS");
 
-	int longestVector = 0;
+	size_t longestVector = 0;
 	int j = 0;
 	int max = setCount;
 	if (index != -1)
