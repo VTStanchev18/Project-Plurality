@@ -10,6 +10,8 @@
 using namespace std;
 
 //Functions -------------------<|
+void quote(string quote, int multiplier = 1);
+
 void mainMenu(SET sets[], int setCount);
 
 //Main ------------------------<|
@@ -30,8 +32,10 @@ void mainMenu(SET sets[], int setCount) //Main menu
 	bool inApp = true, devMode = true; //IMPORTANT!!! Turn devMode to false in release version
 	int amount = 0, mem = 0;
 	int firstId = 0, secondId = 1;
+
 	string lastInput = "";
-	string code = "wwssadadba"; //Konami code
+	string quotesEgg1[] = {"They are rage, brutal, without mercy. But you. You will be worse. Rip and tear, until it is done...","Against all the evil that Hell can conjure, all the wickedness that mankind can produce, we will send unto them... only you. Rip and tear, until it is done..." };
+	
 	string operation = "";
 	while (inApp)
 	{
@@ -56,8 +60,10 @@ void mainMenu(SET sets[], int setCount) //Main menu
 		//	-. OPTIONAL: Credits
 		//	=. OPTIONAL: Explanation
 
+		cout << "\n" << lastInput;
 		operation = "";
 		char sym = _getch();
+
 		switch (sym)
 		{
 		case 27: //Escape
@@ -183,15 +189,18 @@ void mainMenu(SET sets[], int setCount) //Main menu
 		case 'a':
 		case 'd':
 		case 'b':
+		case 'i':
+		case 'k':
+		case 'f':
 			lastInput += sym;
 			break;
-		default: //TODO!!! Add an error case = default case
+		default:
 			lastInput = "";
 			err(4);
 			break;
 		}
 
-		if(lastInput==code)
+		if(lastInput == "wwssadadba")
 		{
 			devMode = !devMode;
 			cout << "\n\nDEV MODE ";
@@ -202,6 +211,104 @@ void mainMenu(SET sets[], int setCount) //Main menu
 			lastInput = "";
 			_getch();
 		}
+
+		if (lastInput == "idkfa")
+		{
+			system("CLS");
+			
+			int random = rand() % 3 - 1;
+			switch (random)
+			{
+			case -1:
+				/*
+				=================     ===============     ===============   ========  ========
+				\\ . . . . . . .\\   //. . . . . . .\\   //. . . . . . .\\  \\. . .\\// . . //
+				||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\/ . . .||
+				|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||
+				||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||
+				|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\ . . . . ||
+				||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\_ . .|. .||
+				|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\ `-_/| . ||
+				||_-' ||  .|/    || ||    \|.  || `-_|| ||_-' ||  .|/    || ||   | \  / |-_.||
+				||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \  / |  `||
+				||    `'         || ||         `'    || ||    `'         || ||   | \  / |   ||
+				||            .===' `===.         .==='.`===.         .===' /==. |  \/  |   ||
+				||         .=='   \_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \/  |   ||
+				||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \/  |   ||
+				||   .=='    _-'          `-__\._-'         `-_./__-'         `' |. /|  |   ||
+				||.=='    _-'                                                     `' |  /==.||
+				=='    _-'                                                            \/   `==
+				\   _-'                                                                `-_   /
+				*/
+				cout << "\n" << "=================     ===============     ===============   ========  ========";
+				cout << "\n" << "\\\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .\\\\// . . //";
+				cout << "\n" << "||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||";
+				cout << "\n" << "|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||";
+				cout << "\n" << "||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||";
+				cout << "\n" << "|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\\ . . . . ||";
+				cout << "\n" << "||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||";
+				cout << "\n" << "|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\\ `-_/| . ||";
+				cout << "\n" << "||_-' ||  .|/    || ||    \\|.  || `-_|| ||_-' ||  .|/    || ||   | \\  / |-_.||";
+				cout << "\n" << "||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \\  / |  `||";
+				cout << "\n" << "||    `'         || ||         `'    || ||    `'         || ||   | \\  / |   ||";
+				cout << "\n" << "||            .===' `===.         .==='.`===.         .===' /==. |  \\/  |   ||";
+				cout << "\n" << "||         .=='   \\_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \\/  |   ||";
+				cout << "\n" << "||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \\/  |   ||";
+				cout << "\n" << "||   .=='    _-'          `-__\\._-'         `-_./__-'         `' |. /|  |   ||";
+				cout << "\n" << "||.=='    _-'                                                     `' |  /==.||";
+				cout << "\n" << "=='    _-'                                                            \\/   `==";
+				cout << "\n" << "\\   _-'                                                                `-_   /";
+
+				PlaySound(TEXT("ExtraFiles\\E1M1Doom.wav"), NULL, SND_ASYNC);
+				Sleep(10000);
+				break;
+			case 0:
+				PlaySound(TEXT("ExtraFiles\\Doom'sGate2016.wav"), NULL, SND_ASYNC);
+				Sleep(8000);	
+				quote(quotesEgg1[random], 3);
+				Sleep(1000);	
+				break;
+			case 1:
+				PlaySound(TEXT("ExtraFiles\\Doom'sGateEternal.wav"), NULL, SND_ASYNC);
+				Sleep(8000);	
+				quote(quotesEgg1[random], 5);
+				Sleep(1000);
+				break;
+			default:
+				break;
+			}
+
+			lastInput = "";
+			_getch();
+			_getch();
+			_getch();
+			PlaySound(NULL, NULL, SND_ASYNC);
+		}
 	
+	}
+}
+
+void quote(string quote, int multiplier)
+{
+	for (int i = 0; i < quote.length(); i++)
+	{
+		cout << quote[i];
+		switch (quote[i])
+		{
+		case ' ':
+			Sleep(100 * multiplier);
+			break;
+		case '.':
+		case ',':
+		case ';':
+		case ':':
+		case '?':
+		case '!':
+			Sleep(200 * multiplier);
+			break;
+		default:
+			Sleep(50 * multiplier);
+			break;
+		}
 	}
 }
