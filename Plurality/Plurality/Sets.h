@@ -284,6 +284,7 @@ int getRemoveIndex(SET* sets, int setCount) //Function to get and check the inde
 	return index;
 }
 
+//PROBLEM!!!
 void renameSets(SET* sets, int& setCount)
 {
 	for (int i = 0; i < setCount; i++)
@@ -292,6 +293,7 @@ void renameSets(SET* sets, int& setCount)
 	}
 }
 
+//PROBLEM!!!
 void removeSet(SET* sets, int& setCount) //Function to remove a set
 {
 	if (!checkIfThereAreAvailableSets(setCount))
@@ -354,10 +356,10 @@ int getIndex(int setCount) //Function to get and check the index before the set 
 
 bool unionOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns a union of Set A and Set B
 {
-	if (checkIfThereIsAvailableSpaceForASet(setCount))
+	if (!checkIfThereIsAvailableSpaceForASet(setCount))
 		return false;
 
-	if (checkIfThereAreEnoughSets(setCount))
+	if (!checkIfThereAreEnoughSets(setCount))
 		return false;
 
 	string origin = "Union of ";
@@ -392,10 +394,10 @@ bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = fa
 {
 	if (!temporary)
 	{
-		if (checkIfThereIsAvailableSpaceForASet(setCount))
+		if (!checkIfThereIsAvailableSpaceForASet(setCount))
 			return false;
 
-		if (checkIfThereAreEnoughSets(setCount))
+		if (!checkIfThereAreEnoughSets(setCount))
 			return false;
 
 		string origin = "Intersection of ";
@@ -428,10 +430,10 @@ bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = fa
 
 bool complementOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns the complement of Set A in Set B
 {
-	if (checkIfThereIsAvailableSpaceForASet(setCount))
+	if (!checkIfThereIsAvailableSpaceForASet(setCount))
 		return false;
 
-	if (checkIfThereAreEnoughSets(setCount))
+	if (!checkIfThereAreEnoughSets(setCount))
 		return false;
 
 	string origin = "Complement of ";
