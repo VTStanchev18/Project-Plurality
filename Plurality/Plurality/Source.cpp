@@ -11,19 +11,26 @@
 using namespace std;
 
 //Functions -------------------<|
+
+//Prints a quote letter by letter
 void quote(string quote, int multiplier = 1);
 
+//Easter egg 1
 void pastry();
 
+//Opens the sound settings menu
 void soundSetting();
 
+//Opens the safety settings menu
 void safetySetting();
 
+//Contains main menu. Connects all the other functions
 void mainMenu(SET* sets, int setCount);
 
 //Global variables ------------<|
 bool soundOn = false;
 bool safeMode = false;
+char catch_getch = NULL;
 
 //Main ------------------------<|
 int main()
@@ -37,7 +44,7 @@ int main()
 
 	safetySetting();
 
-	_getch();
+	catch_getch = _getch();
 
 	mainMenu(sets, setCount);
 }
@@ -47,16 +54,20 @@ void mainMenu(SET* sets, int setCount) //Main menu
 {
 	system("CLS");
 
-	bool inApp = true, operationState = false, devMode = false; //IMPORTANT!!! Turn devMode to false in release version
-	int amount = 0, mem = 0;
-	int firstId = 0, secondId = 1;
+	bool inApp = true; //True if the user is in the program
+	bool operationState = false; //True if the operation has finished successfully
+	bool devMode = false; //True if devMode is On. Turn devMode to false in release version
+	int amount = 0; //Amount of dummy sets to be created 
+	int mem = 0; //Used to store temporary integers
+	int firstId = 0; //The id of the first set to be used in an operation
+	int secondId = 1; //The id of the second set to be used in an operation
 
-	string tempStr = "";
-	string lastInput = "";
+	string tempStr = ""; //Temporary String. Used to remove a char from lastInput
+	string lastInput = ""; //Stores the last few characters typed by the user
 	
-	string quotesEgg1[] = { "They are rage, #brutal, #without mercy.\nBut you...\n##You will be worse.\n#Rip #and #tear, ##until it is done.....","Against all the evil that Hell can conjure,\n#all the wickedness that mankind can produce,\n##we will send unto them...\n#only #you.\n##Rip #and #tear, ##until it is done....." };
-	string DOOM = "=================     ===============     ===============   ========  ========\n\\\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .\\\\// . . //\n||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||\n|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||\n||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||\n|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\\ . . . . ||\n||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||\n|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\\ `-_/| . ||\n||_-' ||  .|/    || ||    \\|.  || `-_|| ||_-' ||  .|/    || ||   | \\  / |-_.||\n||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \\  / |  `||\n||    `'         || ||         `'    || ||    `'         || ||   | \\  / |   ||\n||            .===' `===.         .==='.`===.         .===' /==. |  \\/  |   ||\n||         .=='   \\_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \\/  |   ||\n||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \\/  |   ||\n||   .=='    _-'          `-__\\._-'         `-_./__-'         `' |. /|  |   ||\n||.=='    _-'                                                     `' |  /==.||\n=='    _-'                                                            \\/   `==\n\\   _-'                                                                `-_   /\n";
-	string operation = "";
+	string quotesEgg1[] = { "They are rage, #brutal, #without mercy.\nBut you...\n##You will be worse.\n#Rip #and #tear, ##until it is done.....","Against all the evil that Hell can conjure,\n#all the wickedness that mankind can produce,\n##we will send unto them...\n#only #you.\n##Rip #and #tear, ##until it is done....." }; //Quotes for the second easter egg
+	string DOOM = "=================     ===============     ===============   ========  ========\n\\\\ . . . . . . .\\\\   //. . . . . . .\\\\   //. . . . . . .\\\\  \\\\. . .\\\\// . . //\n||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\\/ . . .||\n|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||\n||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||\n|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\\ . . . . ||\n||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\\_ . .|. .||\n|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\\ `-_/| . ||\n||_-' ||  .|/    || ||    \\|.  || `-_|| ||_-' ||  .|/    || ||   | \\  / |-_.||\n||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \\  / |  `||\n||    `'         || ||         `'    || ||    `'         || ||   | \\  / |   ||\n||            .===' `===.         .==='.`===.         .===' /==. |  \\/  |   ||\n||         .=='   \\_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \\/  |   ||\n||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \\/  |   ||\n||   .=='    _-'          `-__\\._-'         `-_./__-'         `' |. /|  |   ||\n||.=='    _-'                                                     `' |  /==.||\n=='    _-'                                                            \\/   `==\n\\   _-'                                                                `-_   /\n"; //ASCII art for the second easter egg
+	string operation = ""; //Contains the last operation that was done
 
 	while (inApp)
 	{
@@ -102,10 +113,11 @@ void mainMenu(SET* sets, int setCount) //Main menu
 		//	=. OPTIONAL: Explanation
 		//	Esc. Go back -> quit
 
-//      |                    _________
+//		|                    _________
 //		| /\________________/Main  Menu\________________/\
-//		| ||                                           |\
-//		| ||      Available space: 0\26                ||
+//		| ||                                           |\___________________
+//		| ||      Available space: 0\26                |     Sound: On      \
+//		| ||                                           | ____Safe_mode:_On__/
 //		| ||                                           |/
 //		| ||  1. Create a set                          ||
 //		| ||  2. Prints all sets                       ||
@@ -120,11 +132,10 @@ void mainMenu(SET* sets, int setCount) //Main menu
 //		| ||  -. OPTIONAL: Credits                     ||
 //		| ||  =. OPTIONAL: Explanation                 ||
 //		| ||  Esc. Quit the program                    ||
-//		| ||                                           ||
 //		| \/____________________________________________\/
 
 		operation = "";
-		char sym = _getch();
+		char sym = _getch(); //Contains the character typed by the user
 
 		switch (sym)
 		{
@@ -220,7 +231,7 @@ void mainMenu(SET* sets, int setCount) //Main menu
 			system("CLS");
 			cout << sets[setCount - 1].origin << " created.\n";
 			printSets(sets, setCount - 1, setCount - 1, false, false);
-			_getch();
+			catch_getch =_getch();
 
 			break;
 		
@@ -269,7 +280,7 @@ void mainMenu(SET* sets, int setCount) //Main menu
 
 
 				cout << "\n" << amount - mem << " Dummy Set(s) added...\n";
-				_getch();
+				catch_getch  = _getch();
 			}
 			break;
 		
@@ -304,7 +315,7 @@ void mainMenu(SET* sets, int setCount) //Main menu
 			else
 				cout << "DEACTIVATED!";
 			lastInput = "";
-			_getch();
+			catch_getch =_getch();
 			system("CLS");
 			PlaySound(NULL, NULL, SND_ASYNC);
 		}
@@ -314,7 +325,7 @@ void mainMenu(SET* sets, int setCount) //Main menu
 			system("CLS");
 
 			int random = rand() % 3 - 1;
-			switch (-1)
+			switch (random)
 			{
 			case -1:
 				/*
@@ -363,7 +374,7 @@ void mainMenu(SET* sets, int setCount) //Main menu
 
 			lastInput = "";
 
-			_getch();
+			catch_getch =_getch();
 
 			PlaySound(NULL, NULL, SND_ASYNC);
 			system("CLS");
@@ -530,7 +541,7 @@ void soundSetting()
 		soundOn = false;
 		break;
 	}
-	_getch();
+	catch_getch = _getch();
 }
 
 void safetySetting()
@@ -551,5 +562,5 @@ void safetySetting()
 		safeMode = false;
 		break;
 	}
-	_getch();
+	catch_getch =_getch();
 }

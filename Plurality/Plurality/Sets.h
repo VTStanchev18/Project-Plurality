@@ -11,6 +11,11 @@
 using namespace std;
 
 //Set Structure --------------<|
+/*
+string origin - how the set was created;
+char name - the name of the set
+vector<int> values - the values that belong to the set
+*/
 struct SET
 {
 	string origin; //How was the set created
@@ -19,19 +24,14 @@ struct SET
 };
 
 //Functions ------------------<| 
-void err(int errorCode, char punctuation = '.', int speed = 1, bool wait = false, bool clearScreen = true)
-{
-	//How to use
-	/*
+/*
+How to use:
 	=> errorCode -> code for the current error
 	=> punctuation -> char for error punctuation
 	=> speed -> changes the speed of the punctuation
 	=> wait -> if true, then the function will go through a _getch()
 	=> clearScreen -> if true, then the function will clear the screen at the begining
-	*/
-
-	//Error Code
-	/*
+Error Code:
 	1. No available space for a new set
 	2. No available sets
 	3. Not enough sets
@@ -39,7 +39,9 @@ void err(int errorCode, char punctuation = '.', int speed = 1, bool wait = false
 	5. Input was not an integer. Enter an integer.
 	6. Set size cannot be smaller than 0
 	7. Number is out of range
-	*/
+*/
+void err(int errorCode, char punctuation = '.', int speed = 1, bool wait = false, bool clearScreen = true)
+{
 	if (clearScreen)
 		system("CLS");
 
@@ -91,9 +93,10 @@ void err(int errorCode, char punctuation = '.', int speed = 1, bool wait = false
 
 
 	if (wait)
-		_getch();
+		char empty = _getch();
 }
 
+//Function to check if there is enough space in the memory for a new set
 bool checkForSpace(int setCount ,bool showErr = true)
 {
 	if (setCount <= 25)
@@ -102,12 +105,13 @@ bool checkForSpace(int setCount ,bool showErr = true)
 	if (showErr)
 	{
 		err(1);
-		_getch();
+		char empty = _getch();
 	}
 
 	return false;
 }
 
+//Function to check if there are any sets in the memory
 bool checkIfSetIs(int setCount, bool showErr = true)
 {
 	if (setCount > 0)
@@ -116,12 +120,13 @@ bool checkIfSetIs(int setCount, bool showErr = true)
 	if (showErr)
 	{
 		err(2);
-		_getch();
+		char empty = _getch();
 	}
 
 	return false;
 }
 
+//Function to check if there are more than one sets in the memory
 bool checkIfSetsAre(int setCount, bool showErr = true)
 {
 	if (setCount >= 1)
@@ -130,13 +135,14 @@ bool checkIfSetsAre(int setCount, bool showErr = true)
 	if (showErr)
 	{
 		err(2);
-		_getch();
+		char empty = _getch();
 	}
 
 	return false;
 }
 
-void putinInt(int& num) //Function to input and check an integer
+//Function to input and check an integer
+void putinInt(int& num) 
 {
 	cin >> num;
 	while (!cin)
@@ -148,6 +154,7 @@ void putinInt(int& num) //Function to input and check an integer
 	}
 }
 
+//Function to sort a set
 void sortSet(SET& set) //Function to sort a set in ascending order
 {
 	int i, j;
@@ -171,6 +178,7 @@ void sortSet(SET& set) //Function to sort a set in ascending order
 	}
 }
 
+//Function that creates a set
 void createSet(SET& set, int& setCount)
 {
 	system("CLS");
@@ -206,16 +214,17 @@ void createSet(SET& set, int& setCount)
 	return;
 }
 
-bool printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool clearScreen = true) //Function to print sets
-{
-	//How to use
-	/*
+/*
+Function to print sets
+How to use
 	=>* sets -> array of structure SET
 	=> setCount -> current size of sets array
 	=> index -> if index == -1 all sets will be printed otherwise only the set pointed by the index will be printed
 	=> wait -> if true, then the function will go through a _getch()
 	=> clearScreen -> if true, then the function will clear the screen at the begining
-	*/
+*/
+bool printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool clearScreen = true) 
+{
 	if (!checkIfSetIs(setCount))
 		return false;
 
@@ -266,7 +275,7 @@ bool printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool c
 	}
 
 	if (wait)
-		_getch();
+		char empty = _getch();
 
 	return true;
 }
@@ -290,7 +299,7 @@ int getRemoveIndex(SET* sets, int setCount) //Function to get and check the inde
 	return index;
 }
 
-//PROBLEM!!!
+//Function that renames all sets - To be used after deletion
 void renameSets(SET* sets, int& setCount)
 {
 	for (int i = 0; i < setCount; i++)
@@ -298,9 +307,10 @@ void renameSets(SET* sets, int& setCount)
 		sets[i].name = char(i + 65);
 	}
 }
+//PROBLEM!!! ^
 
-//PROBLEM!!!
-void removeSet(SET* sets, int& setCount) //Function to remove a set
+//Function to remove a set
+void removeSet(SET* sets, int& setCount) 
 {
 	if (!checkIfSetIs(setCount))
 		return;
@@ -311,7 +321,7 @@ void removeSet(SET* sets, int& setCount) //Function to remove a set
 
 	printSets(sets, setCount, index, false);
 	cout << "\n\nThis set WILL be DELETED FOREVER!\n";
-	_getch();
+	char empty = _getch();
 
 	for (int i = index; i < setCount - 1; i++)
 	{
@@ -321,8 +331,10 @@ void removeSet(SET* sets, int& setCount) //Function to remove a set
 
 	renameSets(sets, setCount);
 }
+//PROBLEM!!! ^
 
-bool dummySet(SET& set, int& setCount) //Function to create sets at random -> dummy sets
+//Function to create sets at random -> dummy sets
+bool dummySet(SET& set, int& setCount) 
 {
 	if (!checkForSpace(setCount, false))
 		return false;
@@ -333,7 +345,6 @@ bool dummySet(SET& set, int& setCount) //Function to create sets at random -> du
 	{
 		int a = rand() % 60 - 29;
 		set.values.push_back(a);
-		Sleep(10);
 	}
 
 	set.name = char(setCount + 65);
@@ -345,7 +356,8 @@ bool dummySet(SET& set, int& setCount) //Function to create sets at random -> du
 	return true;
 }
 
-int getIndex(int setCount) //Function to get and check the index before the set function
+//Function to get and check the index before the set function
+int getIndex(int setCount) 
 {
 	int index;
 	putinInt(index);
@@ -360,7 +372,8 @@ int getIndex(int setCount) //Function to get and check the index before the set 
 	return index;
 }
 
-bool unionOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns a union of Set A and Set B
+//Function that returns a union of Set A and Set B
+bool unionOfSets(SET A, SET B, SET& C, int& setCount) 
 {
 	if (!checkForSpace(setCount))
 		return false;
@@ -396,7 +409,8 @@ bool unionOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns a 
 	return true;
 }
 
-bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = false) //Function that returns an intersection of Set A and Set B
+//Function that returns an intersection of Set A and Set B
+bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = false) 
 {
 	if (!temporary)
 	{
@@ -434,7 +448,8 @@ bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = fa
 	return true;
 }
 
-bool complementOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns the complement of Set A in Set B
+//Function that returns the complement of Set A in Set B
+bool complementOfSets(SET A, SET B, SET& C, int& setCount) 
 {
 	if (!checkForSpace(setCount))
 		return false;
