@@ -94,8 +94,7 @@ void err(int errorCode, char punctuation = '.', int speed = 1, bool wait = false
 		_getch();
 }
 
-//Think of a shorter name... pls... baka
-bool checkIfThereIsAvailableSpaceForASet(int setCount ,bool showErr = true)
+bool checkForSpace(int setCount ,bool showErr = true)
 {
 	if (setCount <= 25)
 		return true;
@@ -109,8 +108,7 @@ bool checkIfThereIsAvailableSpaceForASet(int setCount ,bool showErr = true)
 	return false;
 }
 
-//Think of a shorter name... pls... baka
-bool checkIfThereAreAvailableSets(int setCount, bool showErr = true)
+bool checkIfSetIs(int setCount, bool showErr = true)
 {
 	if (setCount > 0)
 		return true;
@@ -124,8 +122,7 @@ bool checkIfThereAreAvailableSets(int setCount, bool showErr = true)
 	return false;
 }
 
-//Think of a shorter name... pls... baka
-bool checkIfThereAreEnoughSets(int setCount, bool showErr = true)
+bool checkIfSetsAre(int setCount, bool showErr = true)
 {
 	if (setCount >= 1)
 		return true;
@@ -178,7 +175,7 @@ void createSet(SET& set, int& setCount)
 {
 	system("CLS");
 
-	if (!checkIfThereIsAvailableSpaceForASet(setCount))
+	if (!checkForSpace(setCount))
 		return;
 
 	int len;
@@ -219,7 +216,7 @@ bool printSets(SET* sets, int setCount, int index = -1, bool wait = true, bool c
 	=> wait -> if true, then the function will go through a _getch()
 	=> clearScreen -> if true, then the function will clear the screen at the begining
 	*/
-	if (!checkIfThereAreAvailableSets(setCount))
+	if (!checkIfSetIs(setCount))
 		return false;
 
 	if (clearScreen)
@@ -305,7 +302,7 @@ void renameSets(SET* sets, int& setCount)
 //PROBLEM!!!
 void removeSet(SET* sets, int& setCount) //Function to remove a set
 {
-	if (!checkIfThereAreAvailableSets(setCount))
+	if (!checkIfSetIs(setCount))
 		return;
 
 	int index = getRemoveIndex(sets, setCount);
@@ -327,7 +324,7 @@ void removeSet(SET* sets, int& setCount) //Function to remove a set
 
 bool dummySet(SET& set, int& setCount) //Function to create sets at random -> dummy sets
 {
-	if (!checkIfThereIsAvailableSpaceForASet(setCount, false))
+	if (!checkForSpace(setCount, false))
 		return false;
 
 	int len = rand() % 10 + 1;
@@ -365,10 +362,10 @@ int getIndex(int setCount) //Function to get and check the index before the set 
 
 bool unionOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns a union of Set A and Set B
 {
-	if (!checkIfThereIsAvailableSpaceForASet(setCount))
+	if (!checkForSpace(setCount))
 		return false;
 
-	if (!checkIfThereAreEnoughSets(setCount))
+	if (!checkIfSetsAre(setCount))
 		return false;
 
 	string origin = "Union of ";
@@ -403,10 +400,10 @@ bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = fa
 {
 	if (!temporary)
 	{
-		if (!checkIfThereIsAvailableSpaceForASet(setCount))
+		if (!checkForSpace(setCount))
 			return false;
 
-		if (!checkIfThereAreEnoughSets(setCount))
+		if (!checkIfSetsAre(setCount))
 			return false;
 
 		string origin = "Intersection of ";
@@ -439,10 +436,10 @@ bool intersectionOfSets(SET A, SET B, SET& C, int& setCount, bool temporary = fa
 
 bool complementOfSets(SET A, SET B, SET& C, int& setCount) //Function that returns the complement of Set A in Set B
 {
-	if (!checkIfThereIsAvailableSpaceForASet(setCount))
+	if (!checkForSpace(setCount))
 		return false;
 
-	if (!checkIfThereAreEnoughSets(setCount))
+	if (!checkIfSetsAre(setCount))
 		return false;
 
 	string origin = "Complement of ";

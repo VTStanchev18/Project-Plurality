@@ -17,10 +17,13 @@ void pastry();
 
 void soundSetting();
 
+void safetySetting();
+
 void mainMenu(SET* sets, int setCount);
 
 //Global variables ------------<|
 bool soundOn = false;
+bool safeMode = false;
 
 //Main ------------------------<|
 int main()
@@ -31,6 +34,8 @@ int main()
 	int setCount = 0;
 
 	soundSetting();
+
+	safetySetting();
 
 	_getch();
 
@@ -57,8 +62,22 @@ void mainMenu(SET* sets, int setCount) //Main menu
 	{
 		if (devMode)
 			cout << "DevMode is ON\n";
-		cout << "                    __________\n /\\________________/Main  Menu\\________________/\\\n";
-		cout << " ||      Available space: " << setCount << "\\" << 26 << "                 ||\n";
+		cout << "                    __________\n |\\________________/Main  Menu\\________________/|\n";
+		cout << " ||                                            |\\_____________________\n";
+		cout << " ||      Available space: " << setCount << "\\" << 26 << "                 |     Sound: "; if (soundOn == 1) cout << "On "; else cout << "Off";
+		cout << "       \\\n ||                                            | ____Safe_mode:_"; if (safeMode == 1) cout << "On_"; else cout << "Off";
+		cout << "___/\n ||        ";
+		if (!lastInput.empty())
+		{
+			cout << lastInput;
+			for (int i = 0; i < 36 - lastInput.length(); i++)
+			{
+				cout << ' ';
+			}
+			cout << "|/\n";
+		}
+		else
+			cout << "                                    |/\n";
 		if(setCount <= 25)	cout << " ||  1. Create a set                           ||\n";
 		if (setCount != 0)	cout << " ||  2. Print all sets                         ||\n ||  3. Delete a set                           ||\n";
 		if (setCount > 1)	cout << " ||  4. Union of two sets                      ||\n ||  5. Intersection of two sets               ||\n ||  6. Complement of one set in another       ||\n";
@@ -66,18 +85,6 @@ void mainMenu(SET* sets, int setCount) //Main menu
 		if (devMode and setCount <= 25)
 			cout << " ||  0. Add dummy sets                         ||\n"; //Dev only
 		cout << " ||  Esc. Quit the program                     ||\n";
-		cout << " ||  ";
-		if (!lastInput.empty())
-		{
-			cout << lastInput;
-			for (int i = 0; i < 42 - lastInput.length(); i++)
-			{
-				cout << ' ';
-			}
-			cout << "||\n";
-		}
-		else
-			cout << "                                          ||\n";
 		cout << " \\/____________________________________________\\/\n";
 
 //Prints options:
@@ -97,7 +104,9 @@ void mainMenu(SET* sets, int setCount) //Main menu
 
 //      |                    _________
 //		| /\________________/Main  Menu\________________/\
+//		| ||                                           |\
 //		| ||      Available space: 0\26                ||
+//		| ||                                           |/
 //		| ||  1. Create a set                          ||
 //		| ||  2. Prints all sets                       ||
 //		| ||  3. Delete a set                          ||
@@ -140,30 +149,36 @@ void mainMenu(SET* sets, int setCount) //Main menu
 		
 		case '1': //1. Create a new set
 			lastInput = "";
-			createSet(sets[setCount], setCount);
+			if (setCount <= 25 and safeMode)
+				createSet(sets[setCount], setCount);
 			break;
 		
 		case '2': //2. Prints all or one set
 			lastInput = "";
-			printSets(sets, setCount);
+			if (setCount != 0 and safeMode)
+				printSets(sets, setCount);
 			break;
 		
-		case '3': //4. Delete a set
+		case '3': //3. Delete a set
 			lastInput = "";
-			removeSet(sets, setCount);
+			if(setCount != 0 and safeMode)
+				removeSet(sets, setCount);
 			break;
 		
-		case '4': //5. Union of two sets
+		case '4': //4. Union of two sets
 			operation = "Union of two sets";
 			goto start;
 		
-		case '5': //6. Intersection of two sets
+		case '5': //5. Intersection of two sets
 			operation = "Intersection of two sets";
 			goto start;
 		
-		case '6': //7. Complement of one set in another
+		case '6': //6. Complement of one set in another
 			operation = "Complement of one set in another";
 		start:
+
+			if (!(setCount > 1) and safeMode)
+				break;
 
 			lastInput = "";
 			operationState = false;
@@ -209,12 +224,12 @@ void mainMenu(SET* sets, int setCount) //Main menu
 
 			break;
 		
-		case '9': //Settings
+		case '9': //9. Settings
 			SettingStart:
 			system("CLS");
 
 			cout << "--< Settings >--\n";
-			cout << "1. Sound settings\nEsc. Quit the program\nBackspace. Go back\n";
+			cout << "1. Sound settings\n2. Safety settings\nEsc. Quit the program\nBackspace. Go back\n";
 
 			switch (_getch())
 			{
@@ -225,6 +240,9 @@ void mainMenu(SET* sets, int setCount) //Main menu
 				break;
 			case '1':
 				soundSetting();
+				break;
+			case '2':
+				safetySetting();
 				break;
 			default:
 				cout << "\nError...\n";
@@ -505,11 +523,32 @@ void soundSetting()
 		cout << "\nWarning to headphone users. There may be loud noises...";
 		soundOn = true;
 		break;
+	default:
+		cout << "\nInvalid input...\t";
 	case 'n':
 		cout << "\nSounds are disabled.";
+		soundOn = false;
+		break;
+	}
+	_getch();
+}
+
+void safetySetting()
+{
+	system("CLS");
+	cout << "Would you like to enable safe mode? y/n\n";
+	cout << "Safe mode makes sure that the user cannot do illegal operations.\n";
+	switch (_getch())
+	{
+	case 'y':
+		cout << "\nSafe mode is enabled.";
+		safeMode = true;
 		break;
 	default:
-		cout << "\nInvalid input...\t Sounds are disabled.";
+		cout << "\nInvalid input...\t Safe mode is disabled.";
+	case 'n':
+		cout << "\nSafe mode is disabled.";
+		safeMode = false;
 		break;
 	}
 	_getch();
