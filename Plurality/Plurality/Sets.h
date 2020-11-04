@@ -95,38 +95,47 @@ void err(int errorCode, char punctuation = '.', int speed = 1, bool wait = false
 }
 
 //Think of a shorter name... pls... baka
-bool checkIfThereIsAvailableSpaceForASet(int setCount)
+bool checkIfThereIsAvailableSpaceForASet(int setCount ,bool showErr = true)
 {
 	if (setCount <= 25)
 		return true;
-	else
-		err(1);
 
-	_getch();
+	if (showErr)
+	{
+		err(1);
+		_getch();
+	}
+
 	return false;
 }
 
 //Think of a shorter name... pls... baka
-bool checkIfThereAreAvailableSets(int setCount)
+bool checkIfThereAreAvailableSets(int setCount, bool showErr = true)
 {
 	if (setCount > 0)
 		return true;
-	else
+	
+	if (showErr)
+	{
 		err(2);
+		_getch();
+	}
 
-	_getch();
 	return false;
 }
 
 //Think of a shorter name... pls... baka
-bool checkIfThereAreEnoughSets(int setCount)
+bool checkIfThereAreEnoughSets(int setCount, bool showErr = true)
 {
 	if (setCount >= 1)
 		return true;
-	else
+	
+	if (showErr)
+	{
 		err(2);
+		_getch();
+	}
 
-	_getch();
 	return false;
 }
 
@@ -318,7 +327,7 @@ void removeSet(SET* sets, int& setCount) //Function to remove a set
 
 bool dummySet(SET& set, int& setCount) //Function to create sets at random -> dummy sets
 {
-	if (!checkIfThereIsAvailableSpaceForASet(setCount))
+	if (!checkIfThereIsAvailableSpaceForASet(setCount, false))
 		return false;
 
 	int len = rand() % 10 + 1;

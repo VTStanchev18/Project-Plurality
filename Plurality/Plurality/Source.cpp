@@ -57,14 +57,30 @@ void mainMenu(SET* sets, int setCount) //Main menu
 	{
 		if (devMode)
 			cout << "DevMode is ON\n";
-		cout << "---- M E N U ----\n";
-		cout << setCount << "\\" << 26 << "\n";
-		cout << "1. Create a set\n2. Print all sets\n3. Delete a set\n4. Union of two sets\n5. Intersection of two sets\n6. Complement of two sets\n9. Settings\n";
-		if (devMode)
-			cout << "0. Add dummy sets\n"; //Dev only
-		cout << "Esc. Quit the program\n";
-		//Prints options:
-		//	Esc. Go back -> quit
+		cout << "                    __________\n /\\________________/Main  Menu\\________________/\\\n";
+		cout << " ||      Available space: " << setCount << "\\" << 26 << "                 ||\n";
+		if(setCount <= 25)	cout << " ||  1. Create a set                           ||\n";
+		if (setCount != 0)	cout << " ||  2. Print all sets                         ||\n ||  3. Delete a set                           ||\n";
+		if (setCount > 1)	cout << " ||  4. Union of two sets                      ||\n ||  5. Intersection of two sets               ||\n ||  6. Complement of one set in another       ||\n";
+		cout << " ||  9. Settings                               ||\n";
+		if (devMode and setCount <= 25)
+			cout << " ||  0. Add dummy sets                         ||\n"; //Dev only
+		cout << " ||  Esc. Quit the program                     ||\n";
+		cout << " ||  ";
+		if (!lastInput.empty())
+		{
+			cout << lastInput;
+			for (int i = 0; i < 42 - lastInput.length(); i++)
+			{
+				cout << ' ';
+			}
+			cout << "||\n";
+		}
+		else
+			cout << "                                          ||\n";
+		cout << " \\/____________________________________________\\/\n";
+
+//Prints options:
 		//	1. Create a new set
 		//	2. Prints all or one set
 		//	3. Delete a set
@@ -77,6 +93,26 @@ void mainMenu(SET* sets, int setCount) //Main menu
 		//	0. Adds dummy sets
 		//	-. OPTIONAL: Credits
 		//	=. OPTIONAL: Explanation
+		//	Esc. Go back -> quit
+
+//      |                    _________
+//		| /\________________/Main  Menu\________________/\
+//		| ||      Available space: 0\26                ||
+//		| ||  1. Create a set                          ||
+//		| ||  2. Prints all sets                       ||
+//		| ||  3. Delete a set                          ||
+//		| ||  4. Union of two sets                     ||
+//		| ||  5. Intersection of two sets              ||
+//		| ||  6. Complement of one set in another      ||
+//		| ||  7. OPTIONAL: Save function               ||
+//		| ||  8. OPTIONAL: Load function               ||
+//		| ||  9. OPTIONAL: Settings                    ||
+//		| ||  0. Add dummy sets                        ||
+//		| ||  -. OPTIONAL: Credits                     ||
+//		| ||  =. OPTIONAL: Explanation                 ||
+//		| ||  Esc. Quit the program                    ||
+//		| ||                                           ||
+//		| \/____________________________________________\/
 
 		operation = "";
 		char sym = _getch();
@@ -222,7 +258,8 @@ void mainMenu(SET* sets, int setCount) //Main menu
 		default:
 			if (soundOn) 
 				Beep(700 + int(sym * 10), 100);
-			lastInput += sym;
+			if(sym >= 32)
+				lastInput += sym;
 			break;
 		}
 
@@ -237,9 +274,6 @@ void mainMenu(SET* sets, int setCount) //Main menu
 		}
 		
 		system("CLS");
-
-		if(!lastInput.empty())
-			cout << lastInput << "\n";
 
 		if (lastInput == "wwssadadba")
 		{
